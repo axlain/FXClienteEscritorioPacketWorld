@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clienteescritorio.FXMLPrincipalController">
+   <children>
+      <Label fx:id="lHome" layoutX="283.0" layoutY="62.0" text="HOME" />
+      <Button layoutX="208.0" layoutY="162.0" mnemonicParsing="false" onAction="#clicIrAdminUsuario" text="Ir administracion usuario" />
+      <Button layoutX="457.0" layoutY="57.0" mnemonicParsing="false" onAction="#clilckCerrarSesion" text="Cerrar sesion" />
+   </children>
+</AnchorPane>

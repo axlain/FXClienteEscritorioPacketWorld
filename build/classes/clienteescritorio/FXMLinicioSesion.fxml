@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="514.0" prefWidth="761.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clienteescritorio.FXMLinicioSesionController">
+   <children>
+      <Label layoutX="294.0" layoutY="44.0" text="Inicio de sesión">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <PasswordField fx:id="pfContrasenia" layoutX="287.0" layoutY="155.0" promptText="Contraseña" />
+      <Button layoutX="344.0" layoutY="214.0" mnemonicParsing="false" onAction="#clickIngresarSesion" text="Ingresar" />
+      <TextField fx:id="tfCorreo" layoutX="288.0" layoutY="101.0" promptText="Correo electronico" />
+   </children>
+</AnchorPane>
