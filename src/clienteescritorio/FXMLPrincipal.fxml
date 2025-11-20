@@ -1,15 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clienteescritorio.FXMLPrincipalController">
-   <children>
-      <Label fx:id="lHome" layoutX="283.0" layoutY="62.0" text="HOME" />
-      <Button layoutX="208.0" layoutY="162.0" mnemonicParsing="false" onAction="#clicIrAdminUsuario" text="Ir administracion usuario" />
-      <Button layoutX="457.0" layoutY="57.0" mnemonicParsing="false" onAction="#clilckCerrarSesion" text="Cerrar sesion" />
-   </children>
-</AnchorPane>
+<BorderPane prefHeight="600.0" prefWidth="900.0"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="clienteescritorio.FXMLPrincipalController"
+            stylesheets="@utilidad/EstiloVentanaPrincipal.css">
+
+    <top>
+        <Pane fx:id="header" id="header" prefHeight="80">
+            <children>
+                <Label fx:id="titleApp" id="titleApp"
+                       layoutX="25" layoutY="20"
+                       text="Home">
+                    <font><Font size="32"/></font>
+                </Label>
+
+                <Label fx:id="rol" id="rol"
+                       layoutX="700" layoutY="28"
+                       text="Rol: Administrador"/>
+            </children>
+        </Pane>
+    </top>
+
+    <left>
+        <VBox fx:id="sideMenu" id="sideMenu"
+              prefWidth="220" spacing="10" alignment="TOP_LEFT"
+              style="-fx-padding: 20;">
+
+            <children>
+                <Button fx:id="btnColaboradores" text="Colaboradores" styleClass="menu-btn"/>
+                <Button fx:id="btnUnidades" text="Unidades" styleClass="menu-btn"/>
+                <Button fx:id="btnSucursales" text="Sucursales" styleClass="menu-btn"/>
+                <Button fx:id="btnClientes" text="Clientes" styleClass="menu-btn"/>
+                <Button fx:id="btnEnvios" text="Envíos" styleClass="menu-btn"/>
+                <Button fx:id="btnPaquetes" text="Paquetes" styleClass="menu-btn"/>
+                <Button fx:id="btnAsignarVehiculo" text="Asignar Vehículo" styleClass="menu-btn"/>
+                <Button fx:id="btnAsignarEnvio" text="Asignar Envío" styleClass="menu-btn"/>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <Button fx:id="cerrarSesionBtn" id="cerrarSesionBtn"
+                        text="Cerrar sesión"
+                        onAction="#clickCerrarSesion"/>
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox style="-fx-padding: 40;" spacing="10">
+            <children>
+
+                <Label fx:id="bienvenidaTxt" id="bienvenidaTxt" text="Bienvenido(a):">
+                    <font><Font size="22"/></font>
+                </Label>
+
+                <Label fx:id="name" id="name" text="Nombre Apellidos">
+                    <font><Font size="32"/></font>
+                </Label>
+
+                <HBox spacing="10">
+                    <children>
+                        <Label text="No. de Personal:"/>
+                        <Label fx:id="numeroPersonal" id="numeroPersonal" text="XXXXXX"/>
+                    </children>
+                </HBox>
+
+            </children>
+        </VBox>
+    </center>
+
+</BorderPane>

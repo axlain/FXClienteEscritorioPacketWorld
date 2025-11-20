@@ -1,5 +1,9 @@
 package clienteescritorio;
 
+import clienteescritorio.dominio.AutentificarImp;
+import clienteescritorio.dto.RSAutentificarAdmin;
+import clienteescritorio.pojo.Colaborador;
+import clienteescritorio.utilidad.Utilidades;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,63 +23,63 @@ import javafx.stage.Stage;
 
 
 public class FXMLinicioSesionController implements Initializable {
-
+ @FXML
+    private TextField numero_personal;
     @FXML
-    private TextField tfCorreo;
-    @FXML
-    private PasswordField pfContrasenia;
-    
-    
-    
-    
+    private PasswordField contrasena;
+  
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        
     }    
 
-    @FXML
-    private void clickIngresarSesion(ActionEvent event) {   
-       
-       String correo = tfCorreo.getText();
-       String password = pfContrasenia.getText();
-       
-       //si no es vacio 
-       if(!correo.isEmpty() && !password.isEmpty()){
-           irPantallaInicio(); 
-       }else{
-           Alert alerta= new Alert(AlertType.WARNING); 
-           alerta.setTitle("Campos vacios");
-           alerta.setHeaderText("Falta informacion");
-           /*Java entiende q no deberia ir un titulo 
-           alerta.setHeaderText("Falta null");*/
-           alerta.setContentText("Debes ingresar tu correo electronico" 
-                   +" y contraseña para inicair sesión");
-           //showAndWait hace q el usuario no pueda navegar a otras ventanas 
-           alerta.showAndWait(); 
-       }
-    }
-    //mismo stage difrentes escenas 
-    private void irPantallaInicio(){
-        try {
-            //crear escena
-            Parent vista =
-                    FXMLLoader.load(getClass().getResource("FXMLPrincipal.fxml"));
-            Scene escenaPrincipal = new Scene(vista); 
-            
-            //obtener escenario actual
-            //se utiliza caulquier componente visual q este en mi stage
-            //con el componente tenemos acceso a la escena y cn el escena tenemos accso al stage o window
-            //se hace un casteo, la ventana se convertira en un Stage
-            Stage stPrincipal = (Stage)tfCorreo.getScene().getWindow(); 
-            
-            //cambio de escena 
-            stPrincipal.setScene(escenaPrincipal);
-            stPrincipal.setTitle("Home");
-            stPrincipal.show(); 
-        } catch (IOException ex) {
-            ex.printStackTrace();
+  
+    
+    private void verificarCredenciales(String numero_personal, String contrasena){
+        RSAutentificarAdmin respuesta = AutentificarImp.verificarCredenciales(numero_personal, contrasena);
+        if(!respuesta.isError()){
+            Utilidades.mostrarAlertaSimple("Credenciales verificadas", "Bienvenido(a) " 
+                    + respuesta.getColaborador().getNombre() + " al sistema de paqueteria.", Alert.AlertType.INFORMATION);
+            irPantallaInicio(respuesta.getColaborador());
+        } else {
+            Utilidades.mostrarAlertaSimple("Credenciales incorrectas", respuesta.getMensaje(), Alert.AlertType.ERROR);
         }
     }
+
+    private void irPantallaInicio(Colaborador  colaborador){
+        try{
+            //Crear scene
+            FXMLLoader cargador = new FXMLLoader(getClass().getResource("FXMLPrincipal.fxml"));
+            Parent vista = cargador.load();
+            
+            //Acceder al controlador
+            FXMLPrincipalController controlador = cargador.getController();
+            controlador.cargarInformacion(colaborador);
+            
+            Scene escenePrincipal = new Scene(vista);
+
+            //obtener escenario actual,stage es hijo de window,se hace un casteo con (stage)
+            Stage stPrincipal = (Stage) numero_personal.getScene().getWindow();
+            //asociacion entre stage y scene
+            stPrincipal.setScene(escenePrincipal);
+            stPrincipal.setTitle("Home");
+            stPrincipal.show();
+
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }   
+    }
+
+    @FXML
+    private void clickIngresarSesion(ActionEvent event) {
+         String noPersonal = numero_personal.getText();
+        String password = contrasena.getText();
+        
+        if(!noPersonal.isEmpty() && !password.isEmpty()){
+            verificarCredenciales(noPersonal, password);
+        }else{
+            Utilidades.mostrarAlertaSimple("Campos requeridos", "El numero de personal y/o la contraseña son obligatorios", Alert.AlertType.WARNING);
+        }
+    }
+
     
 }

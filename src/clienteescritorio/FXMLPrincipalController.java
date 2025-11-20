@@ -1,5 +1,6 @@
 package clienteescritorio;
 
+import clienteescritorio.pojo.Colaborador;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,66 +14,139 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class FXMLPrincipalController implements Initializable {
 
     @FXML
-    private Label lHome;
+    private Label rol;
+    
+    @FXML
+    private Label name;
+    
+    @FXML
+    private Label numeroPersonal;
 
+    private Colaborador colaboradorSesion; 
+    @FXML
+    private Pane header;
+    @FXML
+    private Label titleApp;
+    @FXML
+    private VBox sideMenu;
+    @FXML
+    private Button btnColaboradores;
+    @FXML
+    private Button btnUnidades;
+    @FXML
+    private Button btnSucursales;
+    @FXML
+    private Button btnClientes;
+    @FXML
+    private Button btnEnvios;
+    @FXML
+    private Button btnPaquetes;
+    @FXML
+    private Button btnAsignarVehiculo;
+    @FXML
+    private Button btnAsignarEnvio;
+    @FXML
+    private Button cerrarSesionBtn;
+    @FXML
+    private Label bienvenidaTxt;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+   
     }    
 
+    public void cargarInformacion(Colaborador colaborador){
+        colaboradorSesion = colaborador;
+        name.setText(colaborador.getNombre() + " " + colaborador.getApellidoPaterno() + " " + colaborador.getApellidoMaterno() + " ");
+        rol.setText("Rol: " + colaborador.getRol());
+        aplicarPermisos(colaborador.getRol());
+    }
+    
     @FXML
-    private void clicIrAdminUsuario(ActionEvent event) {
-        try {
-            Parent vista =
-                    FXMLLoader.load(getClass().getResource("FXMLAdministracionUsuarios.fxml"));
-            Scene scAdminUsuarios = new Scene(vista); 
+    private void clickCerrarSesion(ActionEvent event) {
+        try{
+            Parent vista = FXMLLoader.load(getClass().getResource("FXMLInicioSesion.fxml"));
+            Scene login = new Scene(vista);
             
-            //Genrar un nuevo stage
-            Stage stAdmin = new Stage();
-            stAdmin.setScene(scAdminUsuarios); 
-            stAdmin.setTitle("Administración de usaurios"); 
-            stAdmin.initModality(Modality.APPLICATION_MODAL);
-            stAdmin.showAndWait();
-        } catch (IOException ex) {
-           ex.printStackTrace();
+            Stage stPrincipal = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            
+            //Cambio Scene
+            stPrincipal.setScene(login);
+            stPrincipal.setTitle("Login");
+            stPrincipal.show();
+
+        }catch(IOException ex){
+            ex.printStackTrace();
         }
-             
     }
 
-    @FXML
-    private void clilckCerrarSesion(ActionEvent event) {
-        try { 
-            //se crea una escena 
-            Parent vista  = 
-                    FXMLLoader.load(getClass().getResource("FXMLinicioSesion.fxml"));
-            Scene escenaCerrarSesion = new Scene(vista); 
-            
-            //identificamos en q stage nos encontramos
-            //se hace un casteo, la ventana se convertira en un Stage
-            //el lHome, es necesario un objeto para saber en que contexto nos encontramos 
-            
-            //Stage stCerrarSesion = (Stage)lHome.getScene().getWindow(); 
-            
-            //identifica el objeto que lo lanzo
-            //se catea para q sepa q sea un button y de ahi se castea para q sea un stage
-            Stage stCerrarSesion =(Stage)((Button)event.getSource()).getScene().getWindow(); 
-            
-            //el stage es renombrado pero sigue sinedo el mismo
-            //se le añade una nueva escena al stage
-            //cambio de escena 
-            stCerrarSesion.setScene(escenaCerrarSesion);
-            stCerrarSesion.setTitle("Login");
-            stCerrarSesion.show(); 
-        } catch (IOException ex) {
-             ex.printStackTrace();
-        }
+    private void aplicarPermisos(String rol) {
+
+    switch (rol) {
+
+        case "Administrador":
+            // El Administrador puede TODO
+            btnColaboradores.setDisable(false);
+            btnUnidades.setDisable(false);
+            btnSucursales.setDisable(false);
+            btnClientes.setDisable(false);
+            btnEnvios.setDisable(false);
+            btnPaquetes.setDisable(false);
+            btnAsignarVehiculo.setDisable(false);
+            btnAsignarEnvio.setDisable(false);
+            break;
+
+
+        case "Ejecutivo de tienda":
+            // Ejecutivos SOLO pueden clientes, envíos, paquetes y asignar envío
+            btnColaboradores.setDisable(true);   // CU-02,03,04 solo Admin
+            btnUnidades.setDisable(true);        // CU-06,07,08 solo Admin
+            btnSucursales.setDisable(true);      // CU-10,11,12 solo Admin
+
+            btnClientes.setDisable(false);       // CU-13 al CU-16 sí puede
+            btnEnvios.setDisable(false);         // CU-18 al CU-21 sí puede
+            btnPaquetes.setDisable(false);       // CU-22 al CU-24 sí puede
+
+            btnAsignarVehiculo.setDisable(true); // CU-17 solo Admin
+            btnAsignarEnvio.setDisable(false);   // CU-26 sí puede
+            break;
+
+
+        case "Conductor":
+            // El Conductor NO usa escritorio → deshabilitar todo
+            btnColaboradores.setDisable(true);
+            btnUnidades.setDisable(true);
+            btnSucursales.setDisable(true);
+            btnClientes.setDisable(true);
+            btnEnvios.setDisable(true);
+            btnPaquetes.setDisable(true);
+            btnAsignarVehiculo.setDisable(true);
+            btnAsignarEnvio.setDisable(true);
+            break;
+
+
+        default:
+            // Seguridad extra
+            btnColaboradores.setDisable(true);
+            btnUnidades.setDisable(true);
+            btnSucursales.setDisable(true);
+            btnClientes.setDisable(true);
+            btnEnvios.setDisable(true);
+            btnPaquetes.setDisable(true);
+            btnAsignarVehiculo.setDisable(true);
+            btnAsignarEnvio.setDisable(true);
+            break;
     }
+}
+
+
     
 }
