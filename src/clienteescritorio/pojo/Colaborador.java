@@ -188,6 +188,9 @@ package clienteescritorio.pojo;
     public void setFotoBase64(String fotoBase64) {
         this.fotoBase64 = fotoBase64;
     }
+    public String getNombreCompleto(){
+    return nombre + " " + apellidoPaterno + " " + apellidoMaterno;
+}
 
     
     

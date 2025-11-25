@@ -1,6 +1,7 @@
 package clienteescritorio;
 
 import clienteescritorio.pojo.Colaborador;
+import clienteescritorio.utilidad.Utilidades;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -12,8 +13,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -57,6 +60,8 @@ public class FXMLPrincipalController implements Initializable {
     private Button cerrarSesionBtn;
     @FXML
     private Label bienvenidaTxt;
+    @FXML
+    private BorderPane borderPaneContenedor;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -67,6 +72,7 @@ public class FXMLPrincipalController implements Initializable {
         colaboradorSesion = colaborador;
         name.setText(colaborador.getNombre() + " " + colaborador.getApellidoPaterno() + " " + colaborador.getApellidoMaterno() + " ");
         rol.setText("Rol: " + colaborador.getRol());
+        numeroPersonal.setText(colaborador.getNumeroPersonal());
         aplicarPermisos(colaborador.getRol());
     }
     
@@ -144,6 +150,19 @@ public class FXMLPrincipalController implements Initializable {
             btnAsignarVehiculo.setDisable(true);
             btnAsignarEnvio.setDisable(true);
             break;
+    }
+}
+    @FXML
+private void clickColaboradores(ActionEvent event) {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionColaboradores.fxml"));
+        Parent vista = loader.load();
+        borderPaneContenedor.setCenter(vista);
+    } catch (Exception e) {
+        e.printStackTrace();
+        Utilidades.mostrarAlertaSimple("Error", 
+            "No se pudo cargar el módulo de colaboradores", 
+            Alert.AlertType.ERROR);
     }
 }
 

@@ -1,72 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 
-<BorderPane prefHeight="600.0" prefWidth="900.0"
-            xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="clienteescritorio.FXMLPrincipalController"
-            stylesheets="@utilidad/EstiloVentanaPrincipal.css">
+<BorderPane fx:id="borderPaneContenedor" prefHeight="647.0" prefWidth="1180.0" stylesheets="@utilidad/EstiloVentanaPrincipal.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clienteescritorio.FXMLPrincipalController">
 
     <top>
-        <Pane fx:id="header" id="header" prefHeight="80">
+        <Pane id="header" fx:id="header" prefHeight="80.0">
             <children>
-                <Label fx:id="titleApp" id="titleApp"
-                       layoutX="25" layoutY="20"
-                       text="Home">
-                    <font><Font size="32"/></font>
+                <Label id="titleApp" fx:id="titleApp" layoutX="25" layoutY="20" text="Home">
+                    <font><Font size="32" /></font>
                 </Label>
 
-                <Label fx:id="rol" id="rol"
-                       layoutX="700" layoutY="28"
-                       text="Rol: Administrador"/>
+                <Label id="rol" fx:id="rol" layoutX="700" layoutY="28" text="Rol: Administrador" />
             </children>
         </Pane>
     </top>
 
     <left>
-        <VBox fx:id="sideMenu" id="sideMenu"
-              prefWidth="220" spacing="10" alignment="TOP_LEFT"
-              style="-fx-padding: 20;">
+        <VBox id="sideMenu" fx:id="sideMenu" alignment="TOP_LEFT" prefWidth="220" spacing="10" style="-fx-padding: 20;">
 
             <children>
-                <Button fx:id="btnColaboradores" text="Colaboradores" styleClass="menu-btn"/>
-                <Button fx:id="btnUnidades" text="Unidades" styleClass="menu-btn"/>
-                <Button fx:id="btnSucursales" text="Sucursales" styleClass="menu-btn"/>
-                <Button fx:id="btnClientes" text="Clientes" styleClass="menu-btn"/>
-                <Button fx:id="btnEnvios" text="Envíos" styleClass="menu-btn"/>
-                <Button fx:id="btnPaquetes" text="Paquetes" styleClass="menu-btn"/>
-                <Button fx:id="btnAsignarVehiculo" text="Asignar Vehículo" styleClass="menu-btn"/>
-                <Button fx:id="btnAsignarEnvio" text="Asignar Envío" styleClass="menu-btn"/>
+                <Button fx:id="btnColaboradores" onAction="#clickColaboradores" styleClass="menu-btn" text="Colaboradores" />
+                <Button fx:id="btnUnidades" styleClass="menu-btn" text="Unidades" />
+                <Button fx:id="btnSucursales" styleClass="menu-btn" text="Sucursales" />
+                <Button fx:id="btnClientes" styleClass="menu-btn" text="Clientes" />
+                <Button fx:id="btnEnvios" styleClass="menu-btn" text="Envíos" />
+                <Button fx:id="btnPaquetes" styleClass="menu-btn" text="Paquetes" />
+                <Button fx:id="btnAsignarVehiculo" styleClass="menu-btn" text="Asignar Vehículo" />
+                <Button fx:id="btnAsignarEnvio" styleClass="menu-btn" text="Asignar Envío" />
 
-                <Region VBox.vgrow="ALWAYS"/>
+                <Region VBox.vgrow="ALWAYS" />
 
-                <Button fx:id="cerrarSesionBtn" id="cerrarSesionBtn"
-                        text="Cerrar sesión"
-                        onAction="#clickCerrarSesion"/>
+                <Button id="cerrarSesionBtn" fx:id="cerrarSesionBtn" onAction="#clickCerrarSesion" text="Cerrar sesión" />
             </children>
         </VBox>
     </left>
 
     <center>
-        <VBox style="-fx-padding: 40;" spacing="10">
+        <VBox spacing="10" style="-fx-padding: 40;">
             <children>
 
-                <Label fx:id="bienvenidaTxt" id="bienvenidaTxt" text="Bienvenido(a):">
-                    <font><Font size="22"/></font>
+                <Label id="bienvenidaTxt" fx:id="bienvenidaTxt" text="Bienvenido(a):">
+                    <font><Font size="22" /></font>
                 </Label>
 
-                <Label fx:id="name" id="name" text="Nombre Apellidos">
-                    <font><Font size="32"/></font>
+                <Label id="name" fx:id="name" text="Nombre Apellidos">
+                    <font><Font size="32" /></font>
                 </Label>
 
                 <HBox spacing="10">
                     <children>
-                        <Label text="No. de Personal:"/>
-                        <Label fx:id="numeroPersonal" id="numeroPersonal" text="XXXXXX"/>
+                        <Label text="No. de Personal:" />
+                        <Label id="numeroPersonal" fx:id="numeroPersonal" text="XXXXXX" />
                     </children>
                 </HBox>
 

@@ -3,12 +3,25 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/dominio/ColaboradorImp.java</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/dominio/SucursalImp.java</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLAdministracionColaboradores.fxml</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/utilidad/Constantes.java</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/dominio/AutentificarImp.java</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLPrincipal.fxml</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/pojo/Sucursal.java</file>
             <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLinicioSesionController.java</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/pojo/Unidad.java</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLFormularioColaboradorController.java</file>
             <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLPrincipalController.java</file>
             <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/dto/RSAutentificarAdmin.java</file>
-            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/dominio/AutentificarImp.java</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/utilidad/EstiloVentanaPrincipal.css</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLAdministracionUsuariosController.java</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLFormularioColaborador.fxml</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/interfaz/INotificador.java</file>
             <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/pojo/Colaborador.java</file>
-            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLPrincipal.fxml</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/dto/Respuesta.java</file>
+            <file>file:/C:/Users/ferro/OneDrive/Documents/Integracion/ProyectoSem/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLAdministracionColaboradoresController.java</file>
         </group>
     </open-files>
 </project-private>
