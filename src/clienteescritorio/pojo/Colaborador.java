@@ -191,7 +191,10 @@ package clienteescritorio.pojo;
     public String getNombreCompleto(){
     return nombre + " " + apellidoPaterno + " " + apellidoMaterno;
 }
-
+    @Override
+    public String toString() {
+        return numeroPersonal + " - " + nombre + " " + apellidoPaterno;
+    }
     
     
 }

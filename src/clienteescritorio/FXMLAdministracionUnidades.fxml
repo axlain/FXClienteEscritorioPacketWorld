@@ -47,8 +47,9 @@
          <children>
             <Button fx:id="btnRegistrar" mnemonicParsing="false" onAction="#clickRegistrar" styleClass="button-success" text="Registrar Unidad" />
             <Button fx:id="btnEditar" mnemonicParsing="false" onAction="#clickEditar" styleClass="button" text="Editar" />
-            <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#clickEliminar" styleClass="button-danger" text="Eliminar" />
+            <Button fx:id="btnDarBaja" mnemonicParsing="false" onAction="#clickDarBaja" styleClass="button-danger" text="Dar de baja " />
             <Button fx:id="btnAsignarUnidad" mnemonicParsing="false" onAction="#clickAsignarUnidad" styleClass="button-secondary" text="Asignar Conductor" />
+            <Button fx:id="btnDesasignarConductor" mnemonicParsing="false" onAction="#clickDesasignarConductor" styleClass="button-secondary" text="Desasignar Conductor" />
          </children>
       </HBox>
    </children>

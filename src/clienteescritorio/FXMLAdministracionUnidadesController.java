@@ -1,5 +1,6 @@
 package clienteescritorio;
 
+import clienteescritorio.dominio.ColaboradorImp;
 import clienteescritorio.dominio.UnidadImp;
 import clienteescritorio.dto.Respuesta;
 import clienteescritorio.interfaz.INotificador;
@@ -59,15 +60,14 @@ public class FXMLAdministracionUnidadesController implements Initializable, INot
     @FXML
     private Button btnEditar;
     @FXML
-    private Button btnEliminar;
-    @FXML
     private Button btnAsignarUnidad;
     
     private ObservableList <Unidad> unidades; 
+    @FXML
+    private Button btnDesasignarConductor;
+    @FXML
+    private Button btnDarBaja;
     
-    /**
-     * Initializes the controller class.
-     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarTabla(); 
@@ -125,22 +125,32 @@ public class FXMLAdministracionUnidadesController implements Initializable, INot
                     "Para editar la información de la unidad, debes de seleccionarlo primero de la tabla", Alert.AlertType.WARNING);
         }
     }
-
     @FXML
-    private void clickEliminar(ActionEvent event) {
+    private void clickDarBaja(ActionEvent event) {
         Unidad unidad = tvUnidades.getSelectionModel().getSelectedItem();
         if (unidad != null){
-            eliminarUnidad(unidad);
+            darDeBajaUnidad(unidad);
         } else {
             Utilidades.mostrarAlertaSimple("Selecciona una unidad", 
-                    "Para editar la información de la unidad, debes de seleccionarlo primero de la tabla", Alert.AlertType.WARNING);
+                    "Para dar de baja la unidad, debes de seleccionarla primero en la tabla", Alert.AlertType.WARNING);
         }
     }
 
     @FXML
     private void clickAsignarUnidad(ActionEvent event) {
+        Unidad unidad = tvUnidades.getSelectionModel().getSelectedItem();
+        if (unidad != null){
+            irAsignarConductor(unidad);
+        } else {
+            Utilidades.mostrarAlertaSimple("Selecciona una unidad", 
+                    "Para asignarle un conductor a una unidad, primero debes selecionar la unidad", Alert.AlertType.WARNING);
+        }
     }
     
+    @FXML
+    private void clickDesasignarConductor(ActionEvent event) {
+        desasignarConductor();
+    }
     
     private void irFormulario(Unidad unidad){
         try{
@@ -152,7 +162,7 @@ public class FXMLAdministracionUnidadesController implements Initializable, INot
             Scene escena = new Scene(vista);
             Stage escenario = new Stage();
             escenario.setScene(escena);
-            escenario.setTitle("Registro de Profesor");
+            escenario.setTitle("Registro de unidad");
             escenario.initModality(Modality.APPLICATION_MODAL);
             escenario.showAndWait();
         }catch (IOException ex){
@@ -160,7 +170,26 @@ public class FXMLAdministracionUnidadesController implements Initializable, INot
         }
     }
     
-    private void eliminarUnidad(Unidad unidad){
+    private void irAsignarConductor(Unidad unidad){
+        try{
+            FXMLLoader cargador = new FXMLLoader(getClass().getResource("FXMLAsignarConductor.fxml"));
+            Parent vista = cargador.load();
+            FXMLAsignarConductorController controlador = cargador.getController();
+            controlador.iniciarlizarDatos(unidad, this);
+            
+            Scene escena = new Scene(vista);
+            Stage escenario = new Stage();
+            escenario.setScene(escena);
+            escenario.setTitle(" Asignar conductor");
+            escenario.initModality(Modality.APPLICATION_MODAL);
+            escenario.showAndWait();
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    
+    private void darDeBajaUnidad(Unidad unidad){
         // Pedir motivo de baja
         String motivo = Utilidades.mostrarDialogoEntrada(
                 "Motivo de baja",
@@ -186,7 +215,6 @@ public class FXMLAdministracionUnidadesController implements Initializable, INot
             return;
         }
 
-        //Llamar al servicio REST
         Respuesta respuesta = UnidadImp.eliminar(unidad.getIdUnidad(), motivo);
 
         // Manejar respuesta
@@ -212,11 +240,69 @@ public class FXMLAdministracionUnidadesController implements Initializable, INot
         }
     }
     
+    private void desasignarConductor() {
+        Unidad unidad = tvUnidades.getSelectionModel().getSelectedItem();
+
+        if (unidad == null) {
+            Utilidades.mostrarAlertaSimple(
+                    "Selecciona una unidad",
+                    "Para desasignar el conductor, primero debes seleccionar una unidad.",
+                    Alert.AlertType.WARNING
+            );
+            return;
+        }
+
+        // Validar si la unidad tiene conductor asignado
+        if (unidad.getIdConductor() == null || unidad.getIdConductor() == 0) {
+            Utilidades.mostrarAlertaSimple(
+                    "Sin conductor",
+                    "Esta unidad no tiene un conductor asignado.",
+                    Alert.AlertType.INFORMATION
+            );
+            return;
+        }
+
+        // Confirmación
+        boolean confirmar = Utilidades.mostrarAlertaConfirmacion(
+                "Confirmar desasignación",
+                "¿Deseas desasignar al conductor de esta unidad?"
+        );
+
+        if (!confirmar) {
+            return;
+        }
+
+        Respuesta respuesta = ColaboradorImp.desasignarConductor(unidad.getIdConductor());
+        if (!respuesta.isError()) {
+            Utilidades.mostrarAlertaSimple(
+                    "Conductor desasignado",
+                    respuesta.getMensaje(),
+                    Alert.AlertType.INFORMATION
+            );
+
+            // Refrescar tabla
+            cargarInformacionUnidades();
+
+            // Notificar al observador
+            notificarOperacionExitosa("desasignación", unidad.getVin());
+
+        } else {
+            Utilidades.mostrarAlertaSimple(
+                    "Error al desasignar conductor",
+                    respuesta.getMensaje(),
+                    Alert.AlertType.ERROR
+            );
+        }
+    }
+
 
     @Override
     public void notificarOperacionExitosa(String operacion, String nombre) {
         System.out.println("Operación: " + operacion + ",unidad: " + nombre);
         cargarInformacionUnidades();
     }
+
+   
+   
     
 }

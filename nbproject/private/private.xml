@@ -3,14 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/dominio/UnidadImp.java</file>
-            <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/dominio/CatalogoImp.java</file>
-            <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/utilidad/Utilidades.java</file>
-            <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/pojo/Unidad.java</file>
-            <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/pojo/TipoUnidad.java</file>
+            <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/dominio/ColaboradorImp.java</file>
+            <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLAsignarConductorController.java</file>
+            <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLAdministracionColaboradoresController.java</file>
             <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLAdministracionUnidadesController.java</file>
-            <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/utilidad/Constantes.java</file>
-            <file>file:/C:/Users/alasn/Desktop/PacketWorld/FXClienteEscritorioPacketWorld/src/clienteescritorio/FXMLFormularioUnidadController.java</file>
         </group>
     </open-files>
 </project-private>
