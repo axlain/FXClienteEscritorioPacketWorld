@@ -1,21 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="514.0" prefWidth="761.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clienteescritorio.FXMLinicioSesionController">
+<AnchorPane prefHeight="500.0" prefWidth="750.0" style="-fx-background-color: linear-gradient(to bottom, #e9ecef, #dee2e6);" stylesheets="@utilidad/Login.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clienteescritorio.FXMLinicioSesionController">
+
+    <children>
+
+        <!-- Tarjeta -->
+        <VBox alignment="CENTER" layoutX="375.0" layoutY="90.0" prefHeight="320.0" prefWidth="334.0" spacing="25" style="-fx-background-color: white;                      -fx-background-radius: 18;                      -fx-padding: 40 40 50 40;                      -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 20, 0, 0, 4);">
    <children>
-      <Label layoutX="294.0" layoutY="44.0" text="Inicio de sesión">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-      </Label>
-      <PasswordField fx:id="contrasena" layoutX="287.0" layoutY="155.0" promptText="Contraseña" />
-      <Button layoutX="344.0" layoutY="214.0" mnemonicParsing="false" onAction="#clickIngresarSesion" text="Ingresar" />
-      <TextField fx:id="numero_personal" layoutX="288.0" layoutY="101.0" promptText="Numero de personal" />
+   
+               <!-- Título -->
+               <Label text="Inicio de Sesión">
+                   <font>
+                       <Font name="Segoe UI Bold" size="26" />
+                   </font>
+                   <style>
+                    -fx-text-fill: #18529D;
+                    -fx-effect: dropshadow(gaussian, rgba(24,82,157,0.3), 6, 0, 0, 1);
+                </style>
+               </Label>
+   
+               <!-- Inputs -->
+               <VBox prefWidth="280" spacing="20">
+      <children>
+      
+                      <TextField fx:id="numero_personal" promptText="Número de personal" styleClass="text-field" />
+      
+                      <PasswordField fx:id="contrasena" promptText="Contraseña" styleClass="text-field" />
+      </children>
+               </VBox>
+   
+               <!-- Botón Ingresar -->
+               <Button onAction="#clickIngresarSesion" prefHeight="45" prefWidth="180" style="-fx-background-color: linear-gradient(to right, #18529D, #1a5fb4);                            -fx-text-fill: white;                            -fx-font-size: 16px;                            -fx-font-weight: bold;                            -fx-background-radius: 12;                            -fx-border-radius: 12;                            -fx-cursor: hand;                            -fx-effect: dropshadow(gaussian, rgba(24,82,157,0.3), 8, 0, 0, 2);" text="Ingresar">
+            </Button>
    </children>
+
+        </VBox>
+      <ImageView fitHeight="220.0" fitWidth="220.0" layoutX="93.0" layoutY="140.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@imagen/iconEmpresa.png" />
+         </image>
+      </ImageView>
+
+    </children>
 </AnchorPane>
