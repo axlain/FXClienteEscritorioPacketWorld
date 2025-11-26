@@ -1,0 +1,73 @@
+package clienteescritorio.dominio;
+
+import clienteescritorio.conexion.ConexionAPI;
+import clienteescritorio.pojo.RespuestaHTTP;
+import clienteescritorio.pojo.Rol;
+import clienteescritorio.pojo.TipoUnidad;
+import clienteescritorio.utilidad.Constantes;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+public class CatalogoImp {
+    public static HashMap<String, Object> obtenerRoles(){
+        HashMap<String, Object> respuesta = new LinkedHashMap();
+        String URL = Constantes.URL_WS + "catalogo/obtener-roles";
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionGET(URL);
+        
+        if(respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK){
+            Gson gson = new Gson();
+            Type tipoLista = new TypeToken<List<Rol>>(){}.getType();
+            List<Rol> roles = gson.fromJson(respuestaAPI.getContenido(), tipoLista);
+            respuesta.put(Constantes.KEY_ERROR, false);
+            respuesta.put(Constantes.KEY_LISTA, roles);
+        }else{
+            respuesta.put(Constantes.KEY_ERROR, true);
+            switch(respuestaAPI.getCodigo()){
+                case Constantes.ERROR_MALFORMED_URL:
+                    respuesta.put(Constantes.KEY_MENSAJE,Constantes.MSJ_ERROR_URL);
+                    break;
+                case Constantes.ERROR_PETICION:
+                    respuesta.put(Constantes.KEY_MENSAJE,Constantes.MSJ_ERROR_PETICION);
+                    break;
+                default:
+                    respuesta.put(Constantes.KEY_MENSAJE, "Lo sentimos, Estamos teniendo problemas para verificar sus obtener la informacion en este momento, por favor inténtelo en otro momento.");   
+            }
+        }
+        
+        return respuesta;
+    }
+    
+    public static HashMap<String, Object> obtenerTipoUnidades(){
+        HashMap<String, Object> respuesta = new LinkedHashMap();
+        String URL = Constantes.URL_WS + "catalogo/obtener-tipo-de-unidades";
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionGET(URL);
+        
+        if(respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK){
+            Gson gson = new Gson();
+            Type tipoLista = new TypeToken<List<TipoUnidad>>(){}.getType();
+            List<TipoUnidad> tipoDeUnidades = gson.fromJson(respuestaAPI.getContenido(), tipoLista);
+            respuesta.put(Constantes.KEY_ERROR, false);
+            respuesta.put(Constantes.KEY_LISTA, tipoDeUnidades);
+        }else{
+            respuesta.put(Constantes.KEY_ERROR, true);
+            switch(respuestaAPI.getCodigo()){
+                case Constantes.ERROR_MALFORMED_URL:
+                    respuesta.put(Constantes.KEY_MENSAJE,Constantes.MSJ_ERROR_URL);
+                    break;
+                case Constantes.ERROR_PETICION:
+                    respuesta.put(Constantes.KEY_MENSAJE,Constantes.MSJ_ERROR_PETICION);
+                    break;
+                default:
+                    respuesta.put(Constantes.KEY_MENSAJE, 
+                            "Lo sentimos, Estamos teniendo problemas para verificar sus obtener la informacion en este momento, por favor inténtelo en otro momento.");   
+            }
+        }
+        
+        return respuesta;
+    }
+}

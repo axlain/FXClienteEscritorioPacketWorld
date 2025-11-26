@@ -153,18 +153,32 @@ public class FXMLPrincipalController implements Initializable {
     }
 }
     @FXML
-private void clickColaboradores(ActionEvent event) {
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionColaboradores.fxml"));
-        Parent vista = loader.load();
-        borderPaneContenedor.setCenter(vista);
-    } catch (Exception e) {
-        e.printStackTrace();
-        Utilidades.mostrarAlertaSimple("Error", 
-            "No se pudo cargar el módulo de colaboradores", 
-            Alert.AlertType.ERROR);
+    private void clickColaboradores(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionColaboradores.fxml"));
+            Parent vista = loader.load();
+            borderPaneContenedor.setCenter(vista);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilidades.mostrarAlertaSimple("Error", 
+                "No se pudo cargar el módulo de colaboradores", 
+                Alert.AlertType.ERROR);
+        }
     }
-}
+
+    @FXML
+    private void clickUnidades(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionUnidades.fxml"));
+            Parent vista = loader.load();
+            borderPaneContenedor.setCenter(vista);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilidades.mostrarAlertaSimple("Error", 
+                "No se pudo cargar el módulo de unidades", 
+                Alert.AlertType.ERROR);
+        }
+    }
 
 
     

@@ -24,12 +24,12 @@
         <VBox id="sideMenu" fx:id="sideMenu" alignment="TOP_LEFT" prefWidth="220" spacing="10" style="-fx-padding: 20;">
 
             <children>
-                <Button fx:id="btnColaboradores" onAction="#clickColaboradores" styleClass="menu-btn" text="Colaboradores" />
-                <Button fx:id="btnUnidades" styleClass="menu-btn" text="Unidades" />
-                <Button fx:id="btnSucursales" styleClass="menu-btn" text="Sucursales" />
-                <Button fx:id="btnClientes" styleClass="menu-btn" text="Clientes" />
                 <Button fx:id="btnEnvios" styleClass="menu-btn" text="Envíos" />
                 <Button fx:id="btnPaquetes" styleClass="menu-btn" text="Paquetes" />
+                <Button fx:id="btnColaboradores" onAction="#clickColaboradores" styleClass="menu-btn" text="Colaboradores" />
+                <Button fx:id="btnUnidades" onAction="#clickUnidades" styleClass="menu-btn" text="Unidades" />
+                <Button fx:id="btnSucursales" styleClass="menu-btn" text="Sucursales" />
+                <Button fx:id="btnClientes" styleClass="menu-btn" text="Clientes" />
                 <Button fx:id="btnAsignarVehiculo" styleClass="menu-btn" text="Asignar Vehículo" />
                 <Button fx:id="btnAsignarEnvio" styleClass="menu-btn" text="Asignar Envío" />
 

@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 
 public class Utilidades {
     
@@ -47,5 +48,19 @@ public class Utilidades {
         Optional<ButtonType> btnSeleccion = alerta.showAndWait();
         return (btnSeleccion.get() == ButtonType.OK);
     }
+    
+    public static String mostrarDialogoEntrada(String titulo, String mensaje){
+        TextInputDialog dialogo = new TextInputDialog();
+        dialogo.setTitle(titulo);
+        dialogo.setHeaderText(null);
+        dialogo.setContentText(mensaje);
+        Optional<String> respuesta = dialogo.showAndWait();
+        if (respuesta.isPresent() && !respuesta.get().trim().isEmpty()) {
+            return respuesta.get().trim();
+        }
+        
+        return null; 
+    }
+
     
 }
