@@ -52,10 +52,7 @@ public class FXMLPrincipalController implements Initializable {
     private Button btnEnvios;
     @FXML
     private Button btnPaquetes;
-    @FXML
-    private Button btnAsignarVehiculo;
-    @FXML
-    private Button btnAsignarEnvio;
+
     @FXML
     private Button cerrarSesionBtn;
     @FXML
@@ -106,8 +103,7 @@ public class FXMLPrincipalController implements Initializable {
             btnClientes.setDisable(false);
             btnEnvios.setDisable(false);
             btnPaquetes.setDisable(false);
-            btnAsignarVehiculo.setDisable(false);
-            btnAsignarEnvio.setDisable(false);
+
             break;
 
 
@@ -121,8 +117,6 @@ public class FXMLPrincipalController implements Initializable {
             btnEnvios.setDisable(false);         // CU-18 al CU-21 sí puede
             btnPaquetes.setDisable(false);       // CU-22 al CU-24 sí puede
 
-            btnAsignarVehiculo.setDisable(true); // CU-17 solo Admin
-            btnAsignarEnvio.setDisable(false);   // CU-26 sí puede
             break;
 
 
@@ -134,8 +128,6 @@ public class FXMLPrincipalController implements Initializable {
             btnClientes.setDisable(true);
             btnEnvios.setDisable(true);
             btnPaquetes.setDisable(true);
-            btnAsignarVehiculo.setDisable(true);
-            btnAsignarEnvio.setDisable(true);
             break;
 
 
@@ -147,8 +139,7 @@ public class FXMLPrincipalController implements Initializable {
             btnClientes.setDisable(true);
             btnEnvios.setDisable(true);
             btnPaquetes.setDisable(true);
-            btnAsignarVehiculo.setDisable(true);
-            btnAsignarEnvio.setDisable(true);
+
             break;
     }
 }
@@ -176,6 +167,20 @@ public class FXMLPrincipalController implements Initializable {
             e.printStackTrace();
             Utilidades.mostrarAlertaSimple("Error", 
                 "No se pudo cargar el módulo de unidades", 
+                Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void clickSucursales(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionSucursales.fxml"));
+            Parent vista = loader.load();
+            borderPaneContenedor.setCenter(vista);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilidades.mostrarAlertaSimple("Error", 
+                "No se pudo cargar el módulo de sucursales", 
                 Alert.AlertType.ERROR);
         }
     }

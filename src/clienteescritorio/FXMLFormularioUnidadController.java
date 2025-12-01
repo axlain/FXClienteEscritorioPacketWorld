@@ -69,8 +69,10 @@ public class FXMLFormularioUnidadController implements Initializable {
             tfModelo.setText(unidadEdicion.getModelo());
             tfAnio.setText(String.valueOf(unidadEdicion.getAnio()));
             tfVin.setText(unidadEdicion.getVin());
+            
             int posicionTipoUnidad = obtenerPosicionTipoUnidad(unidadEdicion.getIdTipoUnidad());
             cbTipoUnidad.getSelectionModel().select(posicionTipoUnidad);
+            
             int posicionSucursal = obtenerPosicionSucursal(unidadEdicion.getIdSucursal());
             cbSucursal.getSelectionModel().select(posicionSucursal);
             tfVin.setEditable(false);

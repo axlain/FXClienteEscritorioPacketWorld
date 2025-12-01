@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane fitToWidth="true" fitToHeight="true"
+            stylesheets="@utilidad/EstiloVentanaPrincipal.css"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="clienteescritorio.FXMLAdministracionSucursalesController">
+
+    <content>
+        <VBox spacing="20"
+              styleClass="card"
+              maxWidth="Infinity"
+              maxHeight="Infinity"
+              VBox.vgrow="ALWAYS">
+
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Título -->
+            <Label text="Administración de Sucursales"
+                   style="-fx-text-fill:#18529D; -fx-font-size:28; -fx-font-weight:bold;" />
+
+            <!-- Barra de búsqueda -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <children>
+                    <Label text="Buscar:" style="-fx-font-weight:bold; -fx-font-size:14;" />
+                    <TextField fx:id="tfBuscar" promptText="Código, nombre corto, municipio o estado"
+                               styleClass="text-field" prefWidth="350" />
+                    <Button fx:id="btnBuscar" text="Buscar" styleClass="button" onAction="#clickBuscar"/>
+                    <Button fx:id="btnLimpiar" text="Limpiar" styleClass="button-secondary" onAction="#clickLimpiarBusqueda"/>
+                </children>
+            </HBox>
+
+            <!-- Tabla -->
+            <TableView fx:id="tvSucursales" VBox.vgrow="ALWAYS" styleClass="table-view">
+                <columns>
+
+                    <TableColumn fx:id="tcCodigo" text="Código" prefWidth="120"/>
+                    <TableColumn fx:id="tcNombreCorto" text="Nombre Corto" prefWidth="160"/>
+                    <TableColumn fx:id="tcEstatus" text="Estatus" prefWidth="100"/>
+
+                    <TableColumn fx:id="tcCalle" text="Calle" prefWidth="150"/>
+                    <TableColumn fx:id="tcNumero" text="Número" prefWidth="100"/>
+                    <TableColumn fx:id="tcColonia" text="Colonia" prefWidth="150"/>
+
+                    <TableColumn fx:id="tcMunicipio" text="Municipio" prefWidth="150"/>
+                    <TableColumn fx:id="tcEstado" text="Estado" prefWidth="150"/>
+                    <TableColumn fx:id="tcCodigoPostal" text="C.P." prefWidth="100"/>
+
+                </columns>
+            </TableView>
+
+            <!-- Botonera -->
+            <HBox alignment="CENTER" spacing="15">
+                <children>
+                    <Button fx:id="btnRegistrar" text="Registrar Sucursal"
+                            styleClass="button-success" onAction="#clickRegistrar"/>
+
+                    <Button fx:id="btnEditar" text="Editar"
+                            styleClass="button" onAction="#clickEditar"/>
+
+                    <Button fx:id="btnDarBaja" text="Dar de baja"
+                            styleClass="button-danger" onAction="#clickDarBaja"/>
+
+                </children>
+            </HBox>
+
+        </VBox>
+    </content>
+</ScrollPane>
