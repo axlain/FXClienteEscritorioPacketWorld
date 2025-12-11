@@ -41,11 +41,29 @@
         <!-- NÚMERO -->
         <VBox spacing="5">
             <children>
-                <Label text="Número" style="-fx-font-weight:bold;"/>
+                <Label text="Número exterior" style="-fx-font-weight:bold;"/>
                 <TextField fx:id="tfNumero" promptText="Ejemplo: 20"/>
             </children>
         </VBox>
+        <!-- CP -->
+        <VBox spacing="5">
+            <children>
+                <Label text="Código Postal" style="-fx-font-weight:bold;"/>
 
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <children>
+                        <TextField fx:id="tfCodigoPostal" 
+                                   promptText="Ej: 91000" 
+                                   prefWidth="200"/>
+
+                        <Button fx:id="btnBuscarCP" 
+                                text="Buscar" 
+                                onAction="#clicBuscarCP"
+                                style="-fx-background-color: #18529D; -fx-text-fill: white; -fx-cursor: hand;"/>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
         <!-- PAÍS -->
         <VBox spacing="5">
             <children>

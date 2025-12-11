@@ -1,6 +1,9 @@
 package clienteescritorio;
 
 import clienteescritorio.dominio.CatalogoImp;
+import clienteescritorio.dominio.SucursalImp;
+import clienteescritorio.dto.RSDatosCodigoPostal;
+import clienteescritorio.dto.Respuesta;
 import clienteescritorio.interfaz.INotificador;
 import clienteescritorio.pojo.Colonia;
 import clienteescritorio.pojo.Estado;
@@ -55,67 +58,87 @@ public class FXMLFormularioSucursalController implements Initializable {
     
     private Sucursal sucursalEdicion;
     private INotificador observador;
+    @FXML
+    private TextField tfCodigoPostal;
+    @FXML
+    private Button btnBuscarCP;
  
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       // Cargar países al inicio
         cargarPais();
-
-        // Cuando seleccionen un país
-        cbPais.setOnAction(event -> {
-            cargarEstado();
-            cbEstado.setDisable(false);
-
-            // Reiniciar combos dependientes
-            cbMunicipio.setDisable(true);
-            cbColonia.setDisable(true);
-            cbMunicipio.getItems().clear();
-            cbColonia.getItems().clear();
-        });
-
-        // Cuando seleccionen un estado
-        cbEstado.setOnAction(event -> {
-            cargarMunicipio();
-            cbMunicipio.setDisable(false);
-            cbColonia.setDisable(true);
-            cbColonia.getItems().clear();
-        });
-
-        // Cuando seleccionen un municipio
-        cbMunicipio.setOnAction(event -> {
-            cargarColonia();
-            cbColonia.setDisable(false);
-        });
+        cbPais.setDisable(true);
+        cbEstado.setDisable(true);
+        cbMunicipio.setDisable(true);
+        cbColonia.setDisable(true);
     }    
     
     public void iniciarlizarDatos(Sucursal sucursalEdicion, INotificador observador){
         this.sucursalEdicion = sucursalEdicion;
         this.observador = observador;
-        
+
         if(sucursalEdicion != null){
-            lblTitulo.setText("Editar Colaborador");
+            lblTitulo.setText("Editar Sucursal");
             tfNombreCorto.setText(sucursalEdicion.getNombreCorto());
             tfCalle.setText(sucursalEdicion.getCalle());
             tfNumero.setText(sucursalEdicion.getNumero());
-            
-            int posicionPais= obtenerPosicionPais(sucursalEdicion.getIdPais());
-            cbPais.getSelectionModel().select(posicionPais);
-            
-            int posicionEstado= obtenerPosicionEstado(sucursalEdicion.getIdEstado());
-            cbEstado.getSelectionModel().select(posicionEstado);
-            
-            int posicionMunicipio= obtenerPosicionMunicipio(sucursalEdicion.getIdMunicipio());
-            cbMunicipio.getSelectionModel().select(posicionMunicipio);
-            
-            int posicionColonia= obtenerPosicionColonia(sucursalEdicion.getIdColonia());
-            cbColonia.getSelectionModel().select(posicionColonia);
-            
+            tfCodigoPostal.setText(sucursalEdicion.getCodigoPostal());
 
-        } 
+            // Asegúrate de que los ComboBox están cargados antes de seleccionar
+            if (paises != null && !paises.isEmpty()) {
+                int posicionPais = obtenerPosicionPais(sucursalEdicion.getIdPais());
+                cbPais.getSelectionModel().select(posicionPais);
+            }
+
+            cargarEstado();
+            if (estados != null && !estados.isEmpty()) {
+                int posicionEstado = obtenerPosicionEstado(sucursalEdicion.getIdEstado());
+                cbEstado.getSelectionModel().select(posicionEstado);
+            }
+
+            cargarMunicipio();
+            if (municipios != null && !municipios.isEmpty()) {
+                int posicionMunicipio = obtenerPosicionMunicipio(sucursalEdicion.getIdMunicipio());
+                cbMunicipio.getSelectionModel().select(posicionMunicipio);
+            }
+
+            // No deshabilitar el ComboBox de colonia aquí
+            if (colonias != null && !colonias.isEmpty()) {
+                int posicionColonia = obtenerPosicionColonia(sucursalEdicion.getIdColonia());
+                cbColonia.getSelectionModel().select(posicionColonia);
+            }
+        }
     }
+
     
     @FXML
     private void clickGuardar(ActionEvent event) {
+        // 1. Validar los campos del formulario
+        if (!sonCamposValidos()) {
+            return; 
+        }
+
+        // 2. Crear el objeto sucursal con los datos del formulario
+        Sucursal sucursal = new Sucursal();
+        sucursal.setNombreCorto(tfNombreCorto.getText().trim());
+        sucursal.setCalle(tfCalle.getText().trim());
+        sucursal.setNumero(tfNumero.getText().trim());
+        sucursal.setCodigoPostal(tfCodigoPostal.getText().trim()); 
+
+        // 3. Asignar los IDs desde los ComboBoxes (ya validados en sonCamposValidos)
+        sucursal.setIdPais(cbPais.getSelectionModel().getSelectedItem().getIdPais());
+        sucursal.setIdEstado(cbEstado.getSelectionModel().getSelectedItem().getIdEstado());
+        sucursal.setIdMunicipio(cbMunicipio.getSelectionModel().getSelectedItem().getIdMunicipio());
+        sucursal.setIdColonia(cbColonia.getSelectionModel().getSelectedItem().getIdColonia());
+
+        // 4. DECISIÓN IMPORTANTE: ¿Es nuevo o es edición?
+        if (sucursalEdicion != null) {
+            // Si sucursalEdicion NO es null, significa que estamos EDITANDO
+            sucursal.setIdSucursal(sucursalEdicion.getIdSucursal());
+            editarSucursal(sucursal);
+        } else {
+            // Si es null, significa que es un REGISTRO NUEVO (la BD genera el ID)
+            registrarSucursal(sucursal);
+        }
     }
 
     @FXML
@@ -126,6 +149,79 @@ public class FXMLFormularioSucursalController implements Initializable {
     private void cerrarVentana(){
         ((Stage) tfNombreCorto.getScene().getWindow()).close();
     }
+    
+    private boolean sonCamposValidos() {
+        String mensaje = "";
+        TextField[] camposTexto = {
+            tfNombreCorto,
+            tfCalle,
+            tfNumero,
+            tfCodigoPostal
+        };
+        String[] nombresCampos = {
+            "Nombre Corto",
+            "Calle",
+            "Número",
+            "Código Postal"
+        };
+
+        // Validar campos vacíos comunes
+        for (int i = 0; i < camposTexto.length; i++) {
+            if (camposTexto[i].getText() == null || camposTexto[i].getText().trim().isEmpty()) {
+                mensaje += "- " + nombresCampos[i] + " es obligatorio.\n";
+            }
+        }
+        // Validar Código Postal (debe ser 5 dígitos)
+        String cp = tfCodigoPostal.getText().trim();
+        if (!cp.matches("\\d{5}")) {
+            mensaje += "- El Código Postal debe ser un número de 5 dígitos.\n";
+        }
+
+        // Validar selección en los ComboBoxes
+        if (cbPais.getSelectionModel().getSelectedItem() == null) {
+            mensaje += "- Debes seleccionar un país.\n";
+        }
+        if (cbEstado.getSelectionModel().getSelectedItem() == null) {
+            mensaje += "- Debes seleccionar un estado.\n";
+        }
+        if (cbMunicipio.getSelectionModel().getSelectedItem() == null) {
+            mensaje += "- Debes seleccionar un municipio.\n";
+        }
+        if (cbColonia.getSelectionModel().getSelectedItem() == null) {
+            mensaje += "- Debes seleccionar una colonia.\n";
+        }
+        if (!mensaje.isEmpty()) {
+            Utilidades.mostrarAlertaSimple("Campos inválidos", mensaje, Alert.AlertType.WARNING);
+            return false;
+        }
+        return true;
+    }
+    
+     private void registrarSucursal(Sucursal sucursal){
+        Respuesta respuesta = SucursalImp.registrar(sucursal);
+        if (!respuesta.isError()){
+            Utilidades.mostrarAlertaSimple("Sucursal registrada", respuesta.getMensaje(), Alert.AlertType.INFORMATION);
+            observador.notificarOperacionExitosa("registro", sucursal.getNombreCorto());
+            cerrarVentana();
+        } else {
+            Utilidades.mostrarAlertaSimple("Error al registrar sucursal", respuesta.getMensaje(), Alert.AlertType.ERROR);
+        }
+    }
+     private void editarSucursal(Sucursal sucursal){
+        sucursal.setIdSucursal(sucursalEdicion.getIdSucursal());
+        Respuesta respuesta = SucursalImp.editar(sucursal);
+        if (!respuesta.isError()){
+            Utilidades.mostrarAlertaSimple("Sucursal editada", respuesta.getMensaje(), Alert.AlertType.INFORMATION);
+            observador.notificarOperacionExitosa("edición", sucursal.getNombreCorto());
+            cerrarVentana();
+        } else {
+            Utilidades.mostrarAlertaSimple("Error al editar sucursal", respuesta.getMensaje(), Alert.AlertType.ERROR);
+        }
+    }
+
+    
+    
+    
     
     private void cargarPais(){
         HashMap<String,Object> respuesta = CatalogoImp.obtenerPais();
@@ -166,29 +262,9 @@ public class FXMLFormularioSucursalController implements Initializable {
             cerrarVentana();
         }
     }
-    private void cargarColonia(){
-        HashMap<String,Object> respuesta = CatalogoImp.obtenerColonia();
-        if( !(boolean) respuesta.get(Constantes.KEY_ERROR)){
-            List<Colonia> coloniasAPI = (List<Colonia>) respuesta.get(Constantes.KEY_LISTA);
-            colonias = FXCollections.observableArrayList();
-            colonias.addAll(coloniasAPI);
-            cbColonia.setItems(colonias);
-        }else{
-            Utilidades.mostrarAlertaSimple("Error", 
-                    respuesta.get(Constantes.KEY_MENSAJE).toString(), Alert.AlertType.ERROR);
-            cerrarVentana();
-        }
-    }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
+
     private int obtenerPosicionPais(int idPais){
         for(int i = 0; i < paises.size(); i++){
             if(paises.get(i).getIdPais()== idPais){
@@ -220,5 +296,94 @@ public class FXMLFormularioSucursalController implements Initializable {
             }      
         }
         return -1; 
+    }
+
+    @FXML
+    private void clicBuscarCP(ActionEvent event) {
+        String cp = tfCodigoPostal.getText();
+
+        if (cp.length() != 5 || !cp.matches("\\d+")) {
+            Utilidades.mostrarAlertaSimple("Advertencia", "Ingresa un CP válido de 5 dígitos.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Cambiar cursor para indicar que "algo está pasando"
+        // Aunque se trabe, al menos el usuario ve el reloj de arena
+        if (tfCodigoPostal.getScene() != null) {
+            tfCodigoPostal.getScene().setCursor(javafx.scene.Cursor.WAIT);
+        }
+
+        try { 
+            // Pedimos los datos generales 
+            HashMap<String, Object> respuestaDatos = CatalogoImp.obtenerDatosCP(cp);
+       
+            // Si encontró el CP, pedimos las colonias inmediatamente
+            if (!(boolean) respuestaDatos.get(Constantes.KEY_ERROR)) {
+                HashMap<String, Object> respuestaColonias = CatalogoImp.obtenerColoniasPorCP(cp);
+                // Las metemos en el mismo mapa para procesar todo junto
+                respuestaDatos.put("colonias_extra", respuestaColonias); 
+            }
+            // Llenar combos
+            procesarRespuestaCP(respuestaDatos, cp);
+
+        } catch (Exception e) {
+            Utilidades.mostrarAlertaSimple("Error", "Error de conexión: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+        // Restaurar cursor y UI pase lo que pase
+        if (tfCodigoPostal.getScene() != null) {
+            tfCodigoPostal.getScene().setCursor(javafx.scene.Cursor.DEFAULT);
+        }
+        
+    }
+    private void procesarRespuestaCP(HashMap<String, Object> respuesta, String cp) {
+        if (!(boolean) respuesta.get(Constantes.KEY_ERROR)) {
+            RSDatosCodigoPostal datos = (RSDatosCodigoPostal) respuesta.get(Constantes.KEY_OBJETO);
+
+            // 1. País
+            int posPais = obtenerPosicionPais(datos.getIdPais());
+            cbPais.getSelectionModel().select(posPais);
+            
+            // 2. Estado 
+            cargarEstado(); 
+            int posEstado = obtenerPosicionEstado(datos.getIdEstado());
+            cbEstado.getSelectionModel().select(posEstado);
+            
+            // 3. Municipio 
+            cargarMunicipio();
+            int posMunicipio = obtenerPosicionMunicipio(datos.getIdMunicipio());
+            cbMunicipio.getSelectionModel().select(posMunicipio);
+            
+            // 4. Colonias 
+            HashMap<String, Object> respColonias = (HashMap<String, Object>) respuesta.get("colonias_extra");
+            if(respColonias != null && !(boolean) respColonias.get(Constantes.KEY_ERROR)){
+                List<Colonia> listaCols = (List<Colonia>) respColonias.get(Constantes.KEY_LISTA);
+                colonias = FXCollections.observableArrayList(listaCols);
+                cbColonia.setItems(colonias);
+                cbColonia.setDisable(false);
+                
+                // Si solo hay una, la seleccionamos
+                if (colonias.size() == 1) cbColonia.getSelectionModel().select(0);
+                cbColonia.show(); 
+            }
+
+        } else {
+            Utilidades.mostrarAlertaSimple("Sin resultados", "No se encontró información para el CP: " + cp, Alert.AlertType.INFORMATION);
+            limpiarCombosDireccion();
+        }
+    }
+
+    
+    private void restaurarUI() {
+        btnBuscarCP.setDisable(false);
+        tfCodigoPostal.setDisable(false);
+        tfCodigoPostal.getScene().setCursor(javafx.scene.Cursor.DEFAULT);
+    }
+    
+    private void limpiarCombosDireccion() {
+        cbPais.getSelectionModel().clearSelection();
+        cbEstado.getItems().clear();
+        cbMunicipio.getItems().clear();
+        cbColonia.getItems().clear();
+        cbColonia.setDisable(true);
     }
 }

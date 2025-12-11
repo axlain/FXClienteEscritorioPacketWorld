@@ -1,6 +1,7 @@
 package clienteescritorio.dominio;
 
 import clienteescritorio.conexion.ConexionAPI;
+import clienteescritorio.dto.RSDatosCodigoPostal;
 import clienteescritorio.pojo.Colonia;
 import clienteescritorio.pojo.Estado;
 import clienteescritorio.pojo.Municipio;
@@ -188,6 +189,65 @@ public class CatalogoImp {
             }
         }
         
+        return respuesta;
+    }
+    
+    public static HashMap<String, Object> obtenerDatosCP(String codigoPostal) {
+        HashMap<String, Object> respuesta = new LinkedHashMap<>();
+        String URL = Constantes.URL_WS + "direccion/obtener-datos-por-cp/" + codigoPostal;    
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionGET(URL);
+
+        if (respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK) {
+            Gson gson = new Gson();
+            RSDatosCodigoPostal datos = gson.fromJson(respuestaAPI.getContenido(), RSDatosCodigoPostal.class);
+            respuesta.put(Constantes.KEY_ERROR, false);
+            respuesta.put(Constantes.KEY_OBJETO, datos); 
+        } else {
+            respuesta.put(Constantes.KEY_ERROR, true);
+            switch(respuestaAPI.getCodigo()){
+                case Constantes.ERROR_MALFORMED_URL:
+                    respuesta.put(Constantes.KEY_MENSAJE,Constantes.MSJ_ERROR_URL);
+                    break;
+                case Constantes.ERROR_PETICION:
+                    respuesta.put(Constantes.KEY_MENSAJE,Constantes.MSJ_ERROR_PETICION);
+                    break;
+                default:
+                    respuesta.put(Constantes.KEY_MENSAJE, 
+                            "Lo sentimos, Estamos teniendo problemas para verificar sus obtener la informacion en este momento, por favor inténtelo en otro momento.");   
+            }
+        }
+        return respuesta;
+    }
+    
+    
+    public static HashMap<String, Object> obtenerColoniasPorCP(String codigoPostal) {
+        HashMap<String, Object> respuesta = new LinkedHashMap<>();
+        // Construimos la URL: ws/direccion/obtener-colonias-por-cp/91000
+        String URL = Constantes.URL_WS + "direccion/obtener-colonias-por-cp/" + codigoPostal;
+        
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionGET(URL);
+
+        if (respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK) {
+            Gson gson = new Gson();
+            Type tipoLista = new TypeToken<List<Colonia>>(){}.getType();
+            List<Colonia> colonias = gson.fromJson(respuestaAPI.getContenido(), tipoLista);
+            
+            respuesta.put(Constantes.KEY_ERROR, false);
+            respuesta.put(Constantes.KEY_LISTA, colonias);
+        } else {
+            respuesta.put(Constantes.KEY_ERROR, true);
+            switch(respuestaAPI.getCodigo()){
+                case Constantes.ERROR_MALFORMED_URL:
+                    respuesta.put(Constantes.KEY_MENSAJE,Constantes.MSJ_ERROR_URL);
+                    break;
+                case Constantes.ERROR_PETICION:
+                    respuesta.put(Constantes.KEY_MENSAJE,Constantes.MSJ_ERROR_PETICION);
+                    break;
+                default:
+                    respuesta.put(Constantes.KEY_MENSAJE, 
+                            "Lo sentimos, Estamos teniendo problemas para verificar sus obtener la informacion en este momento, por favor inténtelo en otro momento.");   
+            }
+        }
         return respuesta;
     }
 }

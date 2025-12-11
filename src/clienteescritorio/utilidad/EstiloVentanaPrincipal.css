@@ -333,3 +333,19 @@ Label {
 .card:hover {
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 18, 0, 0, 6);
 }
+/* Estilo para los ComboBox deshabilitados */
+.combo-box:disabled {
+    -fx-text-fill: #2C3E50; /* Color de texto más oscuro */
+    -fx-opacity: 1; /* Sin opacidad extra */
+}
+
+/* Estilo para el fondo de los ComboBox deshabilitados */
+.combo-box:disabled .combo-box-popup {
+    -fx-background-color: #BDC3C7; /* Fondo gris para los ComboBox deshabilitados */
+}
+
+/* Mejor visibilidad para los ComboBox con color de texto más fuerte */
+.combo-box .arrow {
+    -fx-background-color: transparent; /* Fondo transparente para la flecha */
+}
+

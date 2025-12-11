@@ -1,7 +1,10 @@
 package clienteescritorio.pojo;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Colonia {
     private Integer idColonia; 
+    @SerializedName("colonia")
     private String nombre;
     private String ciudad;
     private String asentamiento;
