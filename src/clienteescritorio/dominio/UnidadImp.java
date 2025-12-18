@@ -135,5 +135,40 @@ public class UnidadImp {
         }
         return respuesta;
     }
-       
+    
+    public static HashMap<String, Object> buscar(String filtro){
+        HashMap<String, Object> respuesta = new HashMap<>();
+        String URL = Constantes.URL_WS + "unidad/buscar?filtro=" + filtro;
+
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionGET(URL);
+
+        if (respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK){
+            Gson gson = new Gson();
+            Type tipoLista = new TypeToken<List<Unidad>>(){}.getType();
+            List<Unidad> unidades = gson.fromJson(
+                    respuestaAPI.getContenido(),
+                    tipoLista
+            );
+
+            respuesta.put("error", false);
+            respuesta.put("unidades", unidades);
+        } else {
+            respuesta.put("error", true);
+            switch (respuestaAPI.getCodigo()){
+                case Constantes.ERROR_MALFORMED_URL:
+                    respuesta.put("mensaje", Constantes.MSJ_ERROR_URL);
+                    break;
+                case Constantes.ERROR_PETICION:
+                    respuesta.put("mensaje", Constantes.MSJ_ERROR_PETICION);
+                    break;
+                default:
+                    respuesta.put(
+                            "mensaje",
+                            "No fue posible realizar la búsqueda de unidades."
+                    );
+            }
+        }
+        return respuesta;
+    }
+
 }

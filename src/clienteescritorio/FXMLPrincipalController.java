@@ -91,6 +91,7 @@ public class FXMLPrincipalController implements Initializable {
         }
     }
 
+
     private void aplicarPermisos(String rol) {
 
     switch (rol) {
@@ -181,6 +182,20 @@ public class FXMLPrincipalController implements Initializable {
             e.printStackTrace();
             Utilidades.mostrarAlertaSimple("Error", 
                 "No se pudo cargar el módulo de sucursales", 
+                Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void clickClientes(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionClientes.fxml"));
+            Parent vista = loader.load();
+            borderPaneContenedor.setCenter(vista);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilidades.mostrarAlertaSimple("Error", 
+                "No se pudo cargar el módulo de clientes", 
                 Alert.AlertType.ERROR);
         }
     }

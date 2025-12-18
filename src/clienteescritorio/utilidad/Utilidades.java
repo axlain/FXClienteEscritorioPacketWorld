@@ -12,6 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -61,6 +62,20 @@ public class Utilidades {
         
         return null; 
     }
+    
+   public static String obtenerMensajeErrorHTTP(int codigo, String mensajeDefault) {
+        switch (codigo) {
+            case Constantes.ERROR_MALFORMED_URL:
+                return Constantes.MSJ_ERROR_URL;
+            case Constantes.ERROR_PETICION:
+                return Constantes.MSJ_ERROR_PETICION;
+            case HttpURLConnection.HTTP_BAD_REQUEST:
+                return "Campos en formato incorrecto, por favor verifica la información enviada";
+            default:
+                return mensajeDefault;
+        }
+    }
+
 
     
 }

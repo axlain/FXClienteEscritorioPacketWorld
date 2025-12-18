@@ -219,10 +219,6 @@ public class FXMLFormularioSucursalController implements Initializable {
         }
     }
 
-    
-    
-    
-    
     private void cargarPais(){
         HashMap<String,Object> respuesta = CatalogoImp.obtenerPais();
         if( !(boolean) respuesta.get(Constantes.KEY_ERROR)){

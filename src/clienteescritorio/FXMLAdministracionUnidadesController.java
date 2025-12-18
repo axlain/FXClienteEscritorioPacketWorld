@@ -104,10 +104,40 @@ public class FXMLAdministracionUnidadesController implements Initializable, INot
     
     @FXML
     private void clickBuscar(ActionEvent event) {
+        String filtro = tfBuscar.getText().trim();
+        if (filtro.isEmpty()){
+            Utilidades.mostrarAlertaSimple(
+                    "Campo vacío",
+                    "Ingrese el VIN, NII o marca para buscar.",
+                    Alert.AlertType.WARNING
+            );
+            return;
+        }
+
+        HashMap<String, Object> respuesta = UnidadImp.buscar(filtro);
+        boolean esError = (boolean) respuesta.get("error");
+
+        if (!esError){
+            List<Unidad> lista =
+                    (List<Unidad>) respuesta.get("unidades");
+
+            ObservableList<Unidad> unidadesBusqueda =
+                    FXCollections.observableArrayList(lista);
+
+            tvUnidades.setItems(unidadesBusqueda);
+        } else {
+            Utilidades.mostrarAlertaSimple(
+                    "Error en la búsqueda",
+                    respuesta.get("mensaje").toString(),
+                    Alert.AlertType.ERROR
+            );
+        }
     }
 
     @FXML
     private void clickLimpiarBusqueda(ActionEvent event) {
+        tfBuscar.clear();
+        tvUnidades.setItems(unidades);
     }
 
     @FXML

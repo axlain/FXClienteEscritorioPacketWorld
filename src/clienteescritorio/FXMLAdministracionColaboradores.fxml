@@ -27,7 +27,7 @@
             <HBox alignment="CENTER_LEFT" spacing="12">
                 <children>
                     <Label text="Buscar:" style="-fx-font-weight:bold; -fx-font-size:14;" />
-                    <TextField fx:id="tfBuscar" promptText="Número personal, nombre o CURP" styleClass="text-field" prefWidth="350" />
+                    <TextField fx:id="tfBuscar" promptText="Número personal, nombre o rol" styleClass="text-field" prefWidth="350" />
                     <Button fx:id="btnBuscar" text="Buscar" styleClass="button" onAction="#clickBuscar"/>
                     <Button fx:id="btnLimpiar" text="Limpiar" styleClass="button-secondary" onAction="#clickLimpiarBusqueda"/>
                 </children>

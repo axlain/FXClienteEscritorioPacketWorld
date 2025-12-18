@@ -91,43 +91,44 @@ private void configurarTabla(){
 
     @FXML
     private void clickBuscar(ActionEvent event) {
-        String criterio = tfBuscar.getText().trim().toLowerCase();
+        String filtro = tfBuscar.getText().trim();
 
-        if (criterio.isEmpty()) {
+        if (filtro.isEmpty()) {
             Utilidades.mostrarAlertaSimple(
-                "Campo vacío",
-                "Ingrese un criterio de búsqueda.",
-                Alert.AlertType.WARNING
+                    "Campo vacío",
+                    "Ingrese un nombre, número del personal o rol para buscar.",
+                    Alert.AlertType.WARNING
             );
             return;
         }
 
-        ObservableList<Colaborador> filtrados = FXCollections.observableArrayList();
+        HashMap<String, Object> respuesta = ColaboradorImp.buscar(filtro);
+        boolean esError = (boolean) respuesta.get("error");
 
-        for (Colaborador c : colaboradores) {
-            String nombreCompleto = (c.getNombre() + " " +
-                                     c.getApellidoPaterno() + " " +
-                                     c.getApellidoMaterno()).toLowerCase();
-            String numeroPersonal = c.getNumeroPersonal() != null ? c.getNumeroPersonal().toLowerCase() : "";
-            String curp = c.getCurp() != null ? c.getCurp().toLowerCase() : "";
+        if (!esError) {
 
-            if (numeroPersonal.contains(criterio) ||
-                nombreCompleto.contains(criterio) ||
-                curp.contains(criterio)) {
-                filtrados.add(c);
+            List<Colaborador> lista =
+                    (List<Colaborador>) respuesta.get("colaboradores");
+
+
+            if (lista == null) {
+                lista = FXCollections.observableArrayList();
             }
-        }
 
-        tvColaboradores.setItems(filtrados);
+            ObservableList<Colaborador> colaboradoresBusqueda =
+                    FXCollections.observableArrayList(lista);
 
-        if (filtrados.isEmpty()) {
+            tvColaboradores.setItems(colaboradoresBusqueda);
+
+        } else {
             Utilidades.mostrarAlertaSimple(
-                "Sin resultados",
-                "No se encontraron colaboradores con ese criterio.",
-                Alert.AlertType.INFORMATION
+                    "Error en la búsqueda",
+                    respuesta.get("mensaje").toString(),
+                    Alert.AlertType.ERROR
             );
         }
     }
+
 
     @FXML
     private void clickLimpiarBusqueda(ActionEvent event) {

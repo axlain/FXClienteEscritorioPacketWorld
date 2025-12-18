@@ -105,6 +105,8 @@ public class FXMLAdministracionSucursalesController implements Initializable, IN
 
     @FXML
     private void clickLimpiarBusqueda(ActionEvent event) {
+        tfBuscar.clear();
+        tvSucursales.setItems(sucursales);
     }
 
     @FXML
@@ -124,6 +126,13 @@ public class FXMLAdministracionSucursalesController implements Initializable, IN
 
     @FXML
     private void clickDarBaja(ActionEvent event) {
+        Sucursal sucursal = tvSucursales.getSelectionModel().getSelectedItem();
+        if (sucursal != null){
+            darDeBajaSucursal(sucursal);
+        } else {
+            Utilidades.mostrarAlertaSimple("Selecciona una sucursal", 
+                    "Para dar de baja la sucursal, debes de seleccionarla primero en la tabla", Alert.AlertType.WARNING);
+        }
     }
     
     private void irFormulario(Sucursal sucursal){
@@ -143,7 +152,35 @@ public class FXMLAdministracionSucursalesController implements Initializable, IN
             ex.printStackTrace();
         }
     }
+    
+    private void darDeBajaSucursal(Sucursal sucursal){
+        boolean confirmado = Utilidades.mostrarAlertaConfirmacion(
+            "Confirmar baja",
+            "¿Estás seguro de dar de baja la sucursal \"" 
+            + sucursal.getNombreCorto() + "\"?"
+        );
 
+        if (confirmado){
+            clienteescritorio.dto.Respuesta respuesta =
+                    SucursalImp.eliminar(sucursal.getIdSucursal());
+
+            if (!respuesta.isError()){
+                Utilidades.mostrarAlertaSimple(
+                        "Sucursal dada de baja",
+                        respuesta.getMensaje(),
+                        Alert.AlertType.INFORMATION
+                );
+                cargarInformacionSucursales();
+            } else {
+                Utilidades.mostrarAlertaSimple(
+                        "Error al dar de baja",
+                        respuesta.getMensaje(),
+                        Alert.AlertType.ERROR
+                );
+            }
+        }
+    }
+    
     @Override
     public void notificarOperacionExitosa(String operacion, String nombre) {
         System.out.println("Operación: " + operacion + ",unidad: " + nombre);

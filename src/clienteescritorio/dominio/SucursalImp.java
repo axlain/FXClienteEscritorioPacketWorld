@@ -100,5 +100,32 @@ public class SucursalImp {
         return respuesta; 
     }
     
-    
+   public static Respuesta eliminar(int idSucursal){
+        Respuesta respuesta = new Respuesta();
+        String URL = Constantes.URL_WS + "sucursal/dar-de-baja/" + idSucursal;
+        Gson gson = new Gson();
+
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionSinBody(
+                URL,
+                Constantes.PETICION_PUT
+        );
+
+        if (respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK){
+            respuesta = gson.fromJson(respuestaAPI.getContenido(), Respuesta.class);
+        } else {
+            respuesta.setError(true);
+            switch(respuestaAPI.getCodigo()){
+                case Constantes.ERROR_MALFORMED_URL:
+                    respuesta.setMensaje(Constantes.MSJ_ERROR_URL);
+                    break;
+                case Constantes.ERROR_PETICION:
+                    respuesta.setMensaje(Constantes.MSJ_ERROR_PETICION);
+                    break;
+                default:
+                    respuesta.setMensaje("No fue posible dar de baja la sucursal en este momento.");
+            }
+        }
+        return respuesta;
+    }
+
 }

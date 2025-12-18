@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane fitToWidth="true" fitToHeight="true"
+            stylesheets="@utilidad/EstiloVentanaPrincipal.css"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="clienteescritorio.FXMLAdministracionClientesController">
+
+    <content>
+        <VBox spacing="20"
+              styleClass="card"
+              maxWidth="Infinity"
+              maxHeight="Infinity"
+              VBox.vgrow="ALWAYS">
+
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- TÍTULO -->
+            <Label text="Administración de Clientes"
+                   style="-fx-text-fill:#18529D; -fx-font-size:28; -fx-font-weight:bold;" />
+
+            <!-- BÚSQUEDA -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <children>
+                    <Label text="Buscar:"
+                           style="-fx-font-weight:bold; -fx-font-size:14;" />
+
+                    <TextField fx:id="tfBuscar"
+                               promptText="Nombre, correo o teléfono"
+                               prefWidth="350"
+                               styleClass="text-field"/>
+
+                    <Button fx:id="btnBuscar"
+                            text="Buscar"
+                            styleClass="button"
+                            onAction="#clickBuscar"/>
+
+                    <Button fx:id="btnLimpiar"
+                            text="Limpiar"
+                            styleClass="button-secondary"
+                            onAction="#clickLimpiarBusqueda"/>
+                </children>
+            </HBox>
+
+            <!-- TABLA -->
+            <TableView fx:id="tvClientes"
+                       VBox.vgrow="ALWAYS"
+                       styleClass="table-view">
+
+                <columns>
+                    <TableColumn fx:id="tcNombre"
+                                 text="Nombre"
+                                 prefWidth="150"/>
+
+                    <TableColumn fx:id="tcApellidoPaterno"
+                                 text="Apellido Paterno"
+                                 prefWidth="150"/>
+
+                    <TableColumn fx:id="tcApellidoMaterno"
+                                 text="Apellido Materno"
+                                 prefWidth="150"/>
+
+                    <TableColumn fx:id="tcCorreo"
+                                 text="Correo"
+                                 prefWidth="200"/>
+
+                    <TableColumn fx:id="tcTelefono"
+                                 text="Teléfono"
+                                 prefWidth="140"/>
+
+                    <TableColumn fx:id="tcCalle"
+                                 text="Calle"
+                                 prefWidth="150"/>
+
+                    <TableColumn fx:id="tcNumero"
+                                 text="Número"
+                                 prefWidth="80"/>
+
+                    <!-- 🔥 CÓDIGO POSTAL -->
+                    <TableColumn fx:id="tcCodigoPostal"
+                                 text="CP"
+                                 prefWidth="100"/>
+
+                    <TableColumn fx:id="tcColonia"
+                                 text="Colonia"
+                                 prefWidth="200"/>
+
+                    <TableColumn fx:id="tcEstado"
+                                 text="Estado"
+                                 prefWidth="150"/>
+                </columns>
+
+            </TableView>
+
+            <!-- BOTONES -->
+            <HBox alignment="CENTER" spacing="15">
+                <children>
+                    <Button fx:id="btnRegistrar"
+                            text="Registrar Cliente"
+                            styleClass="button-success"
+                            onAction="#clickRegistrar"/>
+
+                    <Button fx:id="btnEditar"
+                            text="Editar"
+                            styleClass="button"
+                            onAction="#clickEditar"/>
+
+                    <Button fx:id="btnEliminar"
+                            text="Eliminar"
+                            styleClass="button-danger"
+                            onAction="#clickEliminar"/>
+                </children>
+            </HBox>
+
+        </VBox>
+    </content>
+</ScrollPane>
