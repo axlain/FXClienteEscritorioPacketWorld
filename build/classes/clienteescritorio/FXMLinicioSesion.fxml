@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="750.0" style="-fx-background-color: linear-gradient(to bottom, #e9ecef, #dee2e6);" stylesheets="@utilidad/Login.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clienteescritorio.FXMLinicioSesionController">
+<AnchorPane prefHeight="500.0" prefWidth="750.0" style="-fx-background-color: linear-gradient(to bottom, #e9ecef, #dee2e6);" stylesheets="@/clienteescritorio/utilidad/Login.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clienteescritorio.FXMLinicioSesionController">
 
     <children>
 
@@ -44,7 +44,7 @@
         </VBox>
       <ImageView fitHeight="220.0" fitWidth="220.0" layoutX="93.0" layoutY="140.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@imagen/iconEmpresa.png" />
+            <Image url="@/clienteescritorio/imagen/iconEmpresa.png" />
          </image>
       </ImageView>
 

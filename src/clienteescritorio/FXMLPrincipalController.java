@@ -76,7 +76,7 @@ public class FXMLPrincipalController implements Initializable {
     @FXML
     private void clickCerrarSesion(ActionEvent event) {
         try{
-            Parent vista = FXMLLoader.load(getClass().getResource("FXMLInicioSesion.fxml"));
+            Parent vista = FXMLLoader.load(getClass().getResource("FXMLinicioSesion.fxml"));
             Scene login = new Scene(vista);
             
             Stage stPrincipal = (Stage) ((Button) event.getSource()).getScene().getWindow();
