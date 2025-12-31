@@ -200,6 +200,26 @@ public class FXMLPrincipalController implements Initializable {
         }
     }
 
+    @FXML
+    private void clickEnvios(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionEnvio.fxml"));
+            Parent vista = loader.load();
+
+            FXMLAdministracionEnvioController controller = loader.getController();
+            controller.inicializarSesion(colaboradorSesion);
+
+            borderPaneContenedor.setCenter(vista);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilidades.mostrarAlertaSimple("Error",
+                    "No se pudo cargar el módulo de envios",
+                    Alert.AlertType.ERROR);
+        }
+    }
+
+
 
     
 }

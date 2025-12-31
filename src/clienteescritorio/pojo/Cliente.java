@@ -183,6 +183,9 @@ public class Cliente {
     public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
-    
+    @Override
+    public String toString() {
+        return nombre + " " +apellidoPaterno;
+    }
     
 }

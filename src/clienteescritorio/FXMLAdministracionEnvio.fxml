@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<ScrollPane fitToWidth="true" fitToHeight="true"
+            stylesheets="@utilidad/EstiloVentanaPrincipal.css"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="clienteescritorio.FXMLAdministracionEnvioController">
+
+    <content>
+        <VBox spacing="20"
+              styleClass="card"
+              maxWidth="Infinity"
+              maxHeight="Infinity"
+              VBox.vgrow="ALWAYS">
+
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- TÍTULO -->
+            <Label text="Administración de Envíos"
+                   style="-fx-text-fill:#18529D; -fx-font-size:28; -fx-font-weight:bold;" />
+
+            <!-- BÚSQUEDA POR NÚMERO DE GUÍA -->
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <children>
+                    <Label text="Buscar por Núm. de Guía:"
+                           style="-fx-font-weight:bold; -fx-font-size:14;" />
+
+                    <TextField fx:id="tfBuscarGuia"
+                               promptText="Número de guía"
+                               prefWidth="280"
+                               styleClass="text-field"/>
+
+                    <Button fx:id="btnBuscarGuia"
+                            text="Buscar"
+                            styleClass="button"
+                            onAction="#clickBuscarGuia"/>
+
+                    <Button fx:id="btnLimpiarBusqueda"
+                            text="Limpiar"
+                            styleClass="button-secondary"
+                            onAction="#clickLimpiarBusqueda"/>
+                </children>
+            </HBox>
+
+            <!-- TABLA DE ENVÍOS -->
+            <TableView fx:id="tvEnvios"
+                       VBox.vgrow="ALWAYS"
+                       styleClass="table-view">
+
+                <columns>
+                    <!-- Número de Guía -->
+                    <TableColumn fx:id="tcNumeroGuia"
+                                 text="Número de Guía"
+                                 prefWidth="180"/>
+
+                    <!-- Cliente -->
+                    <TableColumn fx:id="tcCliente"
+                                 text="Cliente"
+                                 prefWidth="180"/>
+
+                    <!-- Destinatario -->
+                    <TableColumn fx:id="tcDestinatario"
+                                 text="Destinatario"
+                                 prefWidth="200"/>
+
+                    <!-- Sucursal -->
+                    <TableColumn fx:id="tcSucursal"
+                                 text="Sucursal Origen"
+                                 prefWidth="160"/>
+
+                    <!-- Estado / Estatus actual -->
+                    <TableColumn fx:id="tcEstatusActual"
+                                 text="Estatus"
+                                 prefWidth="130"/>
+
+                    <!-- Conductor asignado -->
+                    <TableColumn fx:id="tcConductor"
+                                 text="Conductor"
+                                 prefWidth="160"/>
+
+                    <!-- Costo total -->
+                    <TableColumn fx:id="tcCostoTotal"
+                                 text="Costo Total"
+                                 prefWidth="120"/>
+                </columns>
+
+            </TableView>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <HBox alignment="CENTER" spacing="15">
+                <children>
+                    <!-- Crear envío -->
+                    <Button fx:id="btnRegistrarEnvio"
+                            text="Registrar Envío"
+                            styleClass="button-success"
+                            onAction="#clickRegistrarEnvio"/>
+
+                    <!-- Actualizar envío -->
+                    <Button fx:id="btnEditarEnvio"
+                            text="Editar Envío"
+                            styleClass="button"
+                            onAction="#clickEditarEnvio"/>
+
+                    <!-- Actualizar estatus -->
+                    <Button fx:id="btnActualizarEstatus"
+                            text="Cambiar Estatus"
+                            styleClass="button-danger"
+                            onAction="#clickActualizarEstatus"/>
+                </children>
+            </HBox>
+
+        </VBox>
+    </content>
+</ScrollPane>
