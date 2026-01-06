@@ -7,8 +7,6 @@ import clienteescritorio.utilidad.Utilidades;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,14 +14,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-
 public class FXMLinicioSesionController implements Initializable {
- @FXML
+    
+    @FXML
     private TextField numero_personal;
     @FXML
     private PasswordField contrasena;
@@ -31,8 +28,6 @@ public class FXMLinicioSesionController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
     }    
-
-  
     
     private void verificarCredenciales(String numero_personal, String contrasena){
         RSAutentificarAdmin respuesta = AutentificarImp.verificarCredenciales(numero_personal, contrasena);
@@ -44,34 +39,29 @@ public class FXMLinicioSesionController implements Initializable {
             Utilidades.mostrarAlertaSimple("Credenciales incorrectas", respuesta.getMensaje(), Alert.AlertType.ERROR);
         }
     }
-
-    private void irPantallaInicio(Colaborador  colaborador){
+    
+    private void irPantallaInicio(Colaborador colaborador){
         try{
-            //Crear scene
             FXMLLoader cargador = new FXMLLoader(getClass().getResource("FXMLPrincipal.fxml"));
             Parent vista = cargador.load();
             
-            //Acceder al controlador
             FXMLPrincipalController controlador = cargador.getController();
             controlador.cargarInformacion(colaborador);
+            controlador.cargarModuloEnvios();
             
             Scene escenePrincipal = new Scene(vista);
-
-            //obtener escenario actual,stage es hijo de window,se hace un casteo con (stage)
             Stage stPrincipal = (Stage) numero_personal.getScene().getWindow();
-            //asociacion entre stage y scene
             stPrincipal.setScene(escenePrincipal);
             stPrincipal.setTitle("Home");
             stPrincipal.show();
-
         }catch(IOException ex){
             ex.printStackTrace();
         }   
     }
-
+    
     @FXML
     private void clickIngresarSesion(ActionEvent event) {
-         String noPersonal = numero_personal.getText();
+        String noPersonal = numero_personal.getText();
         String password = contrasena.getText();
         
         if(!noPersonal.isEmpty() && !password.isEmpty()){
@@ -80,6 +70,4 @@ public class FXMLinicioSesionController implements Initializable {
             Utilidades.mostrarAlertaSimple("Campos requeridos", "El numero de personal y/o la contraseña son obligatorios", Alert.AlertType.WARNING);
         }
     }
-
-    
 }

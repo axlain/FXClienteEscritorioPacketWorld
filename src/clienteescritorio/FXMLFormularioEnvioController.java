@@ -22,14 +22,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
-public class FXMLFormularioEnvioController implements Initializable {
+public class FXMLFormularioEnvioController implements Initializable, INotificador {
 
     @FXML private Label lblTitulo;
     @FXML private ComboBox<Cliente> cbCliente;
@@ -51,6 +53,8 @@ public class FXMLFormularioEnvioController implements Initializable {
     private ObservableList<Sucursal> sucursales;
     private ObservableList<Destinatario> destinatarios;
     private ObservableList<Colaborador> conductores;
+    @FXML
+    private Button btnAgregarDestinatario;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -60,7 +64,6 @@ public class FXMLFormularioEnvioController implements Initializable {
         cargarConductores();
     }
 
-    // MISMA firma que estás usando desde Admin (solo que ahora incluye idSucursalColaborador)
     public void iniciarlizarDatos(Envio envioEdicion, INotificador observador, Integer idCreadoPor, Integer idSucursalColaborador) {
         this.envioEdicion = envioEdicion;
         this.observador = observador;
@@ -260,5 +263,38 @@ public class FXMLFormularioEnvioController implements Initializable {
             if (conductores.get(i).getIdColaborador() == idConductor) return i;
         }
         return -1;
+    }
+
+    @FXML
+    private void clickAgregarDestinatario(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLFormularioDestinatario.fxml"));
+            Parent vista = loader.load();
+
+            // controlador del formulario destinatario
+            FXMLFormularioDestinatarioController controller = loader.getController();
+
+            // pasar este formulario como observador
+            controller.inicializarDatos(this);
+
+            Stage stage = new Stage();
+            stage.setScene(new javafx.scene.Scene(vista));
+            stage.setTitle("Registrar Destinatario");
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilidades.mostrarAlertaSimple(
+                    "Error",
+                    "No se pudo abrir el formulario de destinatario",
+                    Alert.AlertType.ERROR
+            );
+        }
+    }
+
+    @Override
+    public void notificarOperacionExitosa(String operacion, String nombre) {
+        cargarDestinatarios();
     }
 }

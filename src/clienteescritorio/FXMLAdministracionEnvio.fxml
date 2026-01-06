@@ -110,7 +110,7 @@
                     <!-- Actualizar estatus -->
                     <Button fx:id="btnActualizarEstatus"
                             text="Cambiar Estatus"
-                            styleClass="button-danger"
+                            styleClass="button-secondary"
                             onAction="#clickActualizarEstatus"/>
                 </children>
             </HBox>

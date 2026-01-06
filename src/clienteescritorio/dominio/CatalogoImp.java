@@ -4,12 +4,14 @@ import clienteescritorio.conexion.ConexionAPI;
 import clienteescritorio.dto.RSDatosCodigoPostal;
 import clienteescritorio.pojo.Colonia;
 import clienteescritorio.pojo.Estado;
+import clienteescritorio.pojo.EstatusEnvio;
 import clienteescritorio.pojo.Municipio;
 import clienteescritorio.pojo.Pais;
 import clienteescritorio.pojo.RespuestaHTTP;
 import clienteescritorio.pojo.Rol;
 import clienteescritorio.pojo.TipoUnidad;
 import clienteescritorio.utilidad.Constantes;
+import clienteescritorio.utilidad.Utilidades;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
@@ -250,4 +252,32 @@ public class CatalogoImp {
         }
         return respuesta;
     }
+    
+    public static HashMap<String, Object> obtenerCatalogoEstatus() {
+        HashMap<String, Object> respuesta = new LinkedHashMap<>();
+        String URL = Constantes.URL_WS + "catalogo/obtener-estatus-envio"; 
+
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionGET(URL);
+
+        if (respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK) {
+            Gson gson = new Gson();
+            Type tipoLista = new TypeToken<List<EstatusEnvio>>() {}.getType();
+            List<EstatusEnvio> lista = gson.fromJson(respuestaAPI.getContenido(), tipoLista);
+
+            respuesta.put(Constantes.KEY_ERROR, false);
+            respuesta.put(Constantes.KEY_LISTA, lista);
+        } else {
+            respuesta.put(Constantes.KEY_ERROR, true);
+            respuesta.put(
+                    Constantes.KEY_MENSAJE,
+                    Utilidades.obtenerMensajeErrorHTTP(
+                            respuestaAPI.getCodigo(),
+                            "No fue posible obtener el catálogo de estatus."
+                    )
+            );
+        }
+
+        return respuesta;
+    }
+
 }

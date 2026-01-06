@@ -348,4 +348,12 @@ Label {
 .combo-box .arrow {
     -fx-background-color: transparent; /* Fondo transparente para la flecha */
 }
+#ivFotoSesion {
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-border-width: 2;
+    -fx-border-color: rgba(255,255,255,0.65);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0, 0, 2);
+}
+
 

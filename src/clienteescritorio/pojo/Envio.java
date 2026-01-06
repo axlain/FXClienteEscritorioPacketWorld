@@ -18,11 +18,12 @@ public class Envio {
     private double costoTotal;
     private Integer idCreadoPor;
     private String numeroPersonalColaborador; 
-
+    private String comentario; 
+    
     public Envio() {
     }
 
-    public Envio(Integer idEnvio, String numeroGuia, Integer idDestinatario, String nombreDestinatario, String apellidoPaternoDestinatario, Integer idCliente, String nombreCliente, String apellidoPaternoCliente, Integer idSucursal, String codigoSucursal, Integer idConductor, String numeroPersonalConductor, Integer idEstatusActual, String estatusActual, double costoTotal, Integer idCreadoPor, String numeroPersonalColaborador) {
+    public Envio(Integer idEnvio, String numeroGuia, Integer idDestinatario, String nombreDestinatario, String apellidoPaternoDestinatario, Integer idCliente, String nombreCliente, String apellidoPaternoCliente, Integer idSucursal, String codigoSucursal, Integer idConductor, String numeroPersonalConductor, Integer idEstatusActual, String estatusActual, double costoTotal, Integer idCreadoPor, String numeroPersonalColaborador, String comentario) {
         this.idEnvio = idEnvio;
         this.numeroGuia = numeroGuia;
         this.idDestinatario = idDestinatario;
@@ -40,7 +41,10 @@ public class Envio {
         this.costoTotal = costoTotal;
         this.idCreadoPor = idCreadoPor;
         this.numeroPersonalColaborador = numeroPersonalColaborador;
+        this.comentario = comentario;
     }
+
+    
 
     
     
@@ -110,6 +114,10 @@ public class Envio {
 
     public String getEstatusActual() {
         return estatusActual;
+    }
+
+    public String getComentario() {
+        return comentario;
     }
     
     public String getClienteCompleto() {
@@ -197,6 +205,16 @@ public class Envio {
     public void setEstatusActual(String estatusActual) {
         this.estatusActual = estatusActual;
     }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
+    
+    @Override
+    public String toString() {
+        return numeroGuia;
+    }
+
     
 
 }

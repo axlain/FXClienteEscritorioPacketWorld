@@ -1,12 +1,15 @@
 package clienteescritorio;
 
+import clienteescritorio.dominio.ColaboradorImp;
 import clienteescritorio.pojo.Colaborador;
 import clienteescritorio.utilidad.Utilidades;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Base64;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,134 +19,153 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 public class FXMLPrincipalController implements Initializable {
 
-    @FXML
-    private Label rol;
-    
-    @FXML
-    private Label name;
-    
-    @FXML
-    private Label numeroPersonal;
+    @FXML private Label rol;
+    @FXML private Label name;
+    @FXML private Label numeroPersonal;
 
-    private Colaborador colaboradorSesion; 
-    @FXML
-    private Pane header;
-    @FXML
-    private Label titleApp;
-    @FXML
-    private VBox sideMenu;
-    @FXML
-    private Button btnColaboradores;
-    @FXML
-    private Button btnUnidades;
-    @FXML
-    private Button btnSucursales;
-    @FXML
-    private Button btnClientes;
-    @FXML
-    private Button btnEnvios;
-    @FXML
-    private Button btnPaquetes;
+    private Colaborador colaboradorSesion;
 
-    @FXML
-    private Button cerrarSesionBtn;
-    @FXML
-    private Label bienvenidaTxt;
-    @FXML
-    private BorderPane borderPaneContenedor;
-    
+    @FXML private VBox sideMenu;
+    @FXML private Button btnColaboradores;
+    @FXML private Button btnUnidades;
+    @FXML private Button btnSucursales;
+    @FXML private Button btnClientes;
+    @FXML private Button btnEnvios;
+    @FXML private Button btnPaquetes;
+    @FXML private Button cerrarSesionBtn;
+    @FXML private Label bienvenidaTxt;
+    @FXML private BorderPane borderPaneContenedor;
+
+    @FXML private Label titleApp;
+
+    @FXML private ImageView ivFotoHeader;
+    @FXML private StackPane spAvatar;
+    @FXML private Circle cAvatarBg;
+    @FXML private Circle cAvatarBorde;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-   
-    }    
+        cAvatarBg.setStyle("-fx-fill: rgba(255,255,255,0.18);");
+        cAvatarBorde.setStyle("-fx-fill: transparent; -fx-stroke: rgba(255,255,255,0.55); -fx-stroke-width: 2;");
 
-    public void cargarInformacion(Colaborador colaborador){
+        Circle clip = new Circle(22, 22, 22);
+        ivFotoHeader.setClip(clip);
+    }
+
+    public void cargarInformacion(Colaborador colaborador) {
         colaboradorSesion = colaborador;
-        name.setText(colaborador.getNombre() + " " + colaborador.getApellidoPaterno() + " " + colaborador.getApellidoMaterno() + " ");
+
+        String nombreCompleto = colaborador.getNombre() + " " +
+                                colaborador.getApellidoPaterno() + " " +
+                                colaborador.getApellidoMaterno();
+
+        name.setText(nombreCompleto);
         rol.setText("Rol: " + colaborador.getRol());
         numeroPersonal.setText(colaborador.getNumeroPersonal());
+
+        titleApp.setText(nombreCompleto);
+
         aplicarPermisos(colaborador.getRol());
+
+        cargarFotoHeader(colaborador.getIdColaborador());
     }
-    
+
+    private void cargarFotoHeader(int idColaborador) {
+        try {
+            Colaborador colFoto = ColaboradorImp.obtenerFoto(idColaborador);
+
+            if (colFoto != null && colFoto.getFotoBase64() != null && !colFoto.getFotoBase64().trim().isEmpty()) {
+                String base64 = colFoto.getFotoBase64().trim();
+
+                if (base64.contains(",")) {
+                    base64 = base64.split(",")[1];
+                }
+
+                byte[] bytes = Base64.getDecoder().decode(base64);
+                Image img = new Image(new ByteArrayInputStream(bytes));
+
+                if (img.isError()) {
+                    ponerAvatarDefault();
+                } else {
+                    ivFotoHeader.setImage(img);
+                }
+            } else {
+                ponerAvatarDefault();
+            }
+        } catch (IllegalArgumentException ex) {
+            ponerAvatarDefault();
+        } catch (Exception e) {
+            ponerAvatarDefault();
+        }
+    }
+
+    private void ponerAvatarDefault() {
+        try {
+            Image def = new Image(getClass().getResourceAsStream("/clienteescritorio/imagen/avatar_default.png"));
+            ivFotoHeader.setImage(def);
+        } catch (Exception e) {
+            ivFotoHeader.setImage(null);
+        }
+    }
+
     @FXML
     private void clickCerrarSesion(ActionEvent event) {
-        try{
+        try {
             Parent vista = FXMLLoader.load(getClass().getResource("FXMLinicioSesion.fxml"));
             Scene login = new Scene(vista);
-            
+
             Stage stPrincipal = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            
-            //Cambio Scene
             stPrincipal.setScene(login);
             stPrincipal.setTitle("Login");
             stPrincipal.show();
 
-        }catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-
     private void aplicarPermisos(String rol) {
+        switch (rol) {
+            case "Administrador":
+                btnColaboradores.setDisable(false);
+                btnUnidades.setDisable(false);
+                btnSucursales.setDisable(false);
+                btnClientes.setDisable(false);
+                btnEnvios.setDisable(false);
+                btnPaquetes.setDisable(false);
+                break;
 
-    switch (rol) {
+            case "Ejecutivo de tienda":
+                btnColaboradores.setDisable(true);
+                btnUnidades.setDisable(true);
+                btnSucursales.setDisable(true);
+                btnClientes.setDisable(false);
+                btnEnvios.setDisable(false);
+                btnPaquetes.setDisable(false);
+                break;
 
-        case "Administrador":
-            // El Administrador puede TODO
-            btnColaboradores.setDisable(false);
-            btnUnidades.setDisable(false);
-            btnSucursales.setDisable(false);
-            btnClientes.setDisable(false);
-            btnEnvios.setDisable(false);
-            btnPaquetes.setDisable(false);
-
-            break;
-
-
-        case "Ejecutivo de tienda":
-            // Ejecutivos SOLO pueden clientes, envíos, paquetes y asignar envío
-            btnColaboradores.setDisable(true);   // CU-02,03,04 solo Admin
-            btnUnidades.setDisable(true);        // CU-06,07,08 solo Admin
-            btnSucursales.setDisable(true);      // CU-10,11,12 solo Admin
-
-            btnClientes.setDisable(false);       // CU-13 al CU-16 sí puede
-            btnEnvios.setDisable(false);         // CU-18 al CU-21 sí puede
-            btnPaquetes.setDisable(false);       // CU-22 al CU-24 sí puede
-
-            break;
-
-
-        case "Conductor":
-            // El Conductor NO usa escritorio → deshabilitar todo
-            btnColaboradores.setDisable(true);
-            btnUnidades.setDisable(true);
-            btnSucursales.setDisable(true);
-            btnClientes.setDisable(true);
-            btnEnvios.setDisable(true);
-            btnPaquetes.setDisable(true);
-            break;
-
-
-        default:
-            // Seguridad extra
-            btnColaboradores.setDisable(true);
-            btnUnidades.setDisable(true);
-            btnSucursales.setDisable(true);
-            btnClientes.setDisable(true);
-            btnEnvios.setDisable(true);
-            btnPaquetes.setDisable(true);
-
-            break;
+            case "Conductor":
+            default:
+                btnColaboradores.setDisable(true);
+                btnUnidades.setDisable(true);
+                btnSucursales.setDisable(true);
+                btnClientes.setDisable(true);
+                btnEnvios.setDisable(true);
+                btnPaquetes.setDisable(true);
+                break;
+        }
     }
-}
+
     @FXML
     private void clickColaboradores(ActionEvent event) {
         try {
@@ -152,9 +174,9 @@ public class FXMLPrincipalController implements Initializable {
             borderPaneContenedor.setCenter(vista);
         } catch (Exception e) {
             e.printStackTrace();
-            Utilidades.mostrarAlertaSimple("Error", 
-                "No se pudo cargar el módulo de colaboradores", 
-                Alert.AlertType.ERROR);
+            Utilidades.mostrarAlertaSimple("Error",
+                    "No se pudo cargar el módulo de colaboradores",
+                    Alert.AlertType.ERROR);
         }
     }
 
@@ -166,9 +188,9 @@ public class FXMLPrincipalController implements Initializable {
             borderPaneContenedor.setCenter(vista);
         } catch (Exception e) {
             e.printStackTrace();
-            Utilidades.mostrarAlertaSimple("Error", 
-                "No se pudo cargar el módulo de unidades", 
-                Alert.AlertType.ERROR);
+            Utilidades.mostrarAlertaSimple("Error",
+                    "No se pudo cargar el módulo de unidades",
+                    Alert.AlertType.ERROR);
         }
     }
 
@@ -180,9 +202,9 @@ public class FXMLPrincipalController implements Initializable {
             borderPaneContenedor.setCenter(vista);
         } catch (Exception e) {
             e.printStackTrace();
-            Utilidades.mostrarAlertaSimple("Error", 
-                "No se pudo cargar el módulo de sucursales", 
-                Alert.AlertType.ERROR);
+            Utilidades.mostrarAlertaSimple("Error",
+                    "No se pudo cargar el módulo de sucursales",
+                    Alert.AlertType.ERROR);
         }
     }
 
@@ -194,14 +216,18 @@ public class FXMLPrincipalController implements Initializable {
             borderPaneContenedor.setCenter(vista);
         } catch (Exception e) {
             e.printStackTrace();
-            Utilidades.mostrarAlertaSimple("Error", 
-                "No se pudo cargar el módulo de clientes", 
-                Alert.AlertType.ERROR);
+            Utilidades.mostrarAlertaSimple("Error",
+                    "No se pudo cargar el módulo de clientes",
+                    Alert.AlertType.ERROR);
         }
     }
 
     @FXML
     private void clickEnvios(ActionEvent event) {
+        cargarModuloEnvios();
+    }
+    
+    public void cargarModuloEnvios() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionEnvio.fxml"));
             Parent vista = loader.load();
@@ -214,12 +240,23 @@ public class FXMLPrincipalController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             Utilidades.mostrarAlertaSimple("Error",
-                    "No se pudo cargar el módulo de envios",
+                    "No se pudo cargar el módulo de envíos",
                     Alert.AlertType.ERROR);
         }
     }
+@FXML
+private void clickPaquetes(ActionEvent event) {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionPaquetes.fxml"));
+        Parent vista = loader.load();
+        borderPaneContenedor.setCenter(vista);
+    } catch (Exception e) {
+        e.printStackTrace();
+        Utilidades.mostrarAlertaSimple("Error",
+                "No se pudo cargar el módulo de paquetes",
+                Alert.AlertType.ERROR);
+    }
+}
 
 
-
-    
 }

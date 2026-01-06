@@ -115,17 +115,26 @@ public class FXMLAdministracionEnvioController implements Initializable, INotifi
         }
 
         HashMap<String, Object> respuesta = EnvioImp.buscarPorGuia(guia);
-        boolean esError = (boolean) respuesta.get("error");
+        boolean esError = (boolean) respuesta.get(Constantes.KEY_ERROR);
 
         if (!esError) {
-            List<Envio> lista = (List<Envio>) respuesta.get("envios");
-            ObservableList<Envio> enviosBusqueda =
-                    FXCollections.observableArrayList(lista);
-            tvEnvios.setItems(enviosBusqueda);
+            Envio envio = (Envio) respuesta.get(Constantes.KEY_OBJETO);
+
+            if (envio != null) {
+                tvEnvios.setItems(FXCollections.observableArrayList(envio));
+            } else {
+                Utilidades.mostrarAlertaSimple(
+                        "Sin resultados",
+                        "No se encontró un envío con esa guía.",
+                        Alert.AlertType.INFORMATION
+                );
+                tvEnvios.setItems(FXCollections.observableArrayList());
+            }
+
         } else {
             Utilidades.mostrarAlertaSimple(
                     "Error en la búsqueda",
-                    respuesta.get("mensaje").toString(),
+                    respuesta.get(Constantes.KEY_MENSAJE).toString(),
                     Alert.AlertType.ERROR
             );
         }
@@ -133,7 +142,7 @@ public class FXMLAdministracionEnvioController implements Initializable, INotifi
 
     @FXML
     private void clickLimpiarBusqueda(ActionEvent event) {
-         tfBuscarGuia.clear();
+        tfBuscarGuia.clear();
         if (envios != null) {
             tvEnvios.setItems(envios);
         }
@@ -146,36 +155,95 @@ public class FXMLAdministracionEnvioController implements Initializable, INotifi
 
     @FXML
     private void clickEditarEnvio(ActionEvent event) {
+        Envio envio = tvEnvios.getSelectionModel().getSelectedItem();
+
+        if (envio != null) {
+            irFormularioEnvio(envio);
+        } else {
+            Utilidades.mostrarAlertaSimple(
+                    "Selecciona un envío",
+                    "Para editar un envío, primero debes seleccionarlo en la tabla.",
+                    Alert.AlertType.WARNING
+            );
+        }
     }
 
     @FXML
     private void clickActualizarEstatus(ActionEvent event) {
+        Envio envio = tvEnvios.getSelectionModel().getSelectedItem();
+
+        if (envio == null) {
+            Utilidades.mostrarAlertaSimple(
+                    "Selecciona un envío",
+                    "Para actualizar el estatus, primero debes seleccionar un envío en la tabla.",
+                    Alert.AlertType.WARNING
+            );
+            return;
+        }
+
+        if (colaboradorSesion == null || colaboradorSesion.getIdColaborador() <= 0) {
+            Utilidades.mostrarAlertaSimple(
+                    "Sesión no válida",
+                    "No se encontró el colaborador en sesión (idCreadoPor).",
+                    Alert.AlertType.ERROR
+            );
+            return;
+        }
+        irFormularioActualizarEstatus(envio);
     }
+
     
     private void irFormularioEnvio(Envio envio) {
-    try {
-        FXMLLoader cargador = new FXMLLoader(getClass().getResource("FXMLFormularioEnvio.fxml"));
-        Parent vista = cargador.load();
+        try {
+            FXMLLoader cargador = new FXMLLoader(getClass().getResource("FXMLFormularioEnvio.fxml"));
+            Parent vista = cargador.load();
 
-        FXMLFormularioEnvioController controlador = cargador.getController();
+            FXMLFormularioEnvioController controlador = cargador.getController();
 
-        Integer idCreadoPor = (colaboradorSesion != null) ? colaboradorSesion.getIdColaborador() : null;
-        Integer idSucursalColab = (colaboradorSesion != null) ? colaboradorSesion.getIdSucursal() : null; 
+            Integer idCreadoPor = (colaboradorSesion != null) ? colaboradorSesion.getIdColaborador() : null;
+            Integer idSucursalColab = (colaboradorSesion != null) ? colaboradorSesion.getIdSucursal() : null; 
 
-        controlador.iniciarlizarDatos(envio, this, idCreadoPor, idSucursalColab);
+            controlador.iniciarlizarDatos(envio, this, idCreadoPor, idSucursalColab);
 
 
-        Scene escena = new Scene(vista);
-        Stage escenario = new Stage();
-        escenario.setScene(escena);
-        escenario.setTitle("Registro / Edición de Envío");
-        escenario.initModality(Modality.APPLICATION_MODAL);
-        escenario.showAndWait();
+            Scene escena = new Scene(vista);
+            Stage escenario = new Stage();
+            escenario.setScene(escena);
+            escenario.setTitle("Registro / Edición de Envío");
+            escenario.initModality(Modality.APPLICATION_MODAL);
+            escenario.showAndWait();
 
-    } catch (IOException ex) {
-        ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
-}
+    
+    private void irFormularioActualizarEstatus(Envio envio) {
+        try {
+            FXMLLoader cargador = new FXMLLoader(getClass().getResource("FXMLActualizarEstatusEnvio.fxml"));
+            Parent vista = cargador.load();
+
+            FXMLActualizarEstatusEnvioController controlador = cargador.getController();
+            Integer idColaboradorSesion = colaboradorSesion.getIdColaborador();
+
+            controlador.inicializarDatos(envio, idColaboradorSesion, this);
+
+            Scene escena = new Scene(vista);
+            Stage escenario = new Stage();
+            escenario.setScene(escena);
+            escenario.setTitle("Actualizar Estatus de Envío");
+            escenario.initModality(Modality.APPLICATION_MODAL);
+            escenario.showAndWait();
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            Utilidades.mostrarAlertaSimple(
+                    "Error",
+                    "No se pudo abrir la ventana para actualizar estatus.",
+                    Alert.AlertType.ERROR
+            );
+        }
+    }
 
 
     @Override

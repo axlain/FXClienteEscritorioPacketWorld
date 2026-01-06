@@ -39,9 +39,26 @@
         <VBox spacing="5">
             <children>
                 <Label text="Destinatario" style="-fx-font-weight:bold;"/>
-                <ComboBox fx:id="cbDestinatario" prefWidth="350" promptText="Seleccione un destinatario"/>
+
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <children>
+                        <ComboBox fx:id="cbDestinatario"
+                                  prefWidth="350"
+                                  promptText="Seleccione un destinatario"
+                                  HBox.hgrow="ALWAYS"/>
+
+                        <Button fx:id="btnAgregarDestinatario"
+                                text="+"
+                                onAction="#clickAgregarDestinatario"
+                                style="-fx-background-color:#18529D; -fx-text-fill:white; -fx-font-weight:bold; -fx-cursor:hand;"
+                                prefWidth="40"
+                                minWidth="40"
+                                maxWidth="40"/>
+                    </children>
+                </HBox>
             </children>
-        </VBox>
+        </VBox> 
+
 
         <VBox spacing="5">
             <children>

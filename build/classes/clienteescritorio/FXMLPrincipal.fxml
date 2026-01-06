@@ -1,64 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import java.lang.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
-
-<BorderPane fx:id="borderPaneContenedor" prefHeight="647.0" prefWidth="1180.0" stylesheets="@utilidad/EstiloVentanaPrincipal.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clienteescritorio.FXMLPrincipalController">
-
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<BorderPane fx:id="borderPaneContenedor"
+            prefHeight="647.0" prefWidth="1180.0"
+            stylesheets="@utilidad/EstiloVentanaPrincipal.css"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="clienteescritorio.FXMLPrincipalController">
     <top>
-        <Pane id="header" fx:id="header" prefHeight="80.0">
-            <children>
-                <Label id="titleApp" fx:id="titleApp" layoutX="25" layoutY="20" text="Home">
-                    <font><Font size="32" /></font>
-                </Label>
-
-                <Label id="rol" fx:id="rol" layoutX="700.0" layoutY="28.0" text="Rol: Administrador" />
-            </children>
-        </Pane>
+        <AnchorPane id="header" fx:id="header" prefHeight="80.0">
+            <Label id="titleApp" fx:id="titleApp" text="Home"
+                   AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="20.0">
+                <font><Font size="32"/></font>
+            </Label>
+            <HBox spacing="12"
+                  alignment="CENTER_RIGHT"
+                  AnchorPane.rightAnchor="25.0"
+                  AnchorPane.topAnchor="18.0">
+                <Label id="rol" fx:id="rol" text="Rol: Administrador"/>
+                <StackPane fx:id="spAvatar" prefWidth="44.0" prefHeight="44.0">
+                    <Circle fx:id="cAvatarBg" radius="22.0"/>
+                    <ImageView fx:id="ivFotoHeader"
+                               fitWidth="44.0" fitHeight="44.0"
+                               preserveRatio="false"
+                               pickOnBounds="true"/>
+                    <Circle fx:id="cAvatarBorde" radius="22.0"/>
+                </StackPane>
+            </HBox>
+        </AnchorPane>
     </top>
-
     <left>
         <VBox id="sideMenu" fx:id="sideMenu" alignment="TOP_LEFT" prefWidth="220" spacing="10" style="-fx-padding: 20;">
-
             <children>
                 <Button fx:id="btnEnvios" onAction="#clickEnvios" styleClass="menu-btn" text="Envíos" />
-                <Button fx:id="btnPaquetes" styleClass="menu-btn" text="Paquetes" />
+                <Button fx:id="btnPaquetes" onAction="#clickPaquetes" styleClass="menu-btn" text="Paquetes" />
+
                 <Button fx:id="btnColaboradores" onAction="#clickColaboradores" styleClass="menu-btn" text="Colaboradores" />
                 <Button fx:id="btnUnidades" onAction="#clickUnidades" styleClass="menu-btn" text="Unidades" />
                 <Button fx:id="btnSucursales" onAction="#clickSucursales" styleClass="menu-btn" text="Sucursales" />
                 <Button fx:id="btnClientes" onAction="#clickClientes" styleClass="menu-btn" text="Clientes" />
-
                 <Region VBox.vgrow="ALWAYS" />
-
                 <Button id="cerrarSesionBtn" fx:id="cerrarSesionBtn" onAction="#clickCerrarSesion" text="Cerrar sesión" />
             </children>
         </VBox>
     </left>
-
     <center>
         <VBox spacing="10" style="-fx-padding: 40;">
             <children>
-
                 <Label id="bienvenidaTxt" fx:id="bienvenidaTxt" text="Bienvenido(a):">
                     <font><Font size="22" /></font>
                 </Label>
-
                 <Label id="name" fx:id="name" text="Nombre Apellidos">
                     <font><Font size="32" /></font>
                 </Label>
-
                 <HBox spacing="10">
                     <children>
                         <Label text="No. de Personal:" />
                         <Label id="numeroPersonal" fx:id="numeroPersonal" text="XXXXXX" />
                     </children>
                 </HBox>
-
             </children>
         </VBox>
     </center>
-
 </BorderPane>

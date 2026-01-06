@@ -27,6 +27,13 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.nio.file.Files;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
+
 
 public class FXMLFormularioColaboradorController implements Initializable {
 
@@ -63,6 +70,7 @@ public class FXMLFormularioColaboradorController implements Initializable {
     private Colaborador colaboradorEdicion;
     private INotificador observador;
 
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarRoles();
@@ -84,7 +92,7 @@ public class FXMLFormularioColaboradorController implements Initializable {
             
             int posicionRol = obtenerPosicionRol(colaboradorEdicion.getIdRol());
             cbRol.getSelectionModel().select(posicionRol);
-            
+
             if(colaboradorEdicion.getNumeroLicencia() != null && 
                !colaboradorEdicion.getNumeroLicencia().isEmpty()){
                 vboxLicencia.setVisible(true);
@@ -97,6 +105,8 @@ public class FXMLFormularioColaboradorController implements Initializable {
             
             tfCurp.setEditable(false);
             pfContrasena.setVisible(false);
+        
+
         } else {
             lblTitulo.setText("Registrar Colaborador");
         }
@@ -228,12 +238,11 @@ public class FXMLFormularioColaboradorController implements Initializable {
             Utilidades.mostrarAlertaSimple("Error al registrar colaborador", respuesta.getMensaje(), Alert.AlertType.ERROR);
         }
     }
-    
+
     private void editarColaborador(Colaborador colaborador){
         colaborador.setIdColaborador(colaboradorEdicion.getIdColaborador());
-        colaborador.setIdRol(colaboradorEdicion.getIdRol());
         colaborador.setNumeroPersonal(colaboradorEdicion.getNumeroPersonal());
-        
+
         Respuesta respuesta = ColaboradorImp.editar(colaborador);
         if (!respuesta.isError()){
             Utilidades.mostrarAlertaSimple("Colaborador editado", respuesta.getMensaje(), Alert.AlertType.INFORMATION);
@@ -243,6 +252,7 @@ public class FXMLFormularioColaboradorController implements Initializable {
             Utilidades.mostrarAlertaSimple("Error al editar colaborador", respuesta.getMensaje(), Alert.AlertType.ERROR);
         }
     }
+
     
     private int obtenerIdRol(String rol){
         if("Administrador".equals(rol)){
