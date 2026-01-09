@@ -328,7 +328,6 @@ public class FXMLAdministracionUnidadesController implements Initializable, INot
 
     @Override
     public void notificarOperacionExitosa(String operacion, String nombre) {
-        System.out.println("Operación: " + operacion + ",unidad: " + nombre);
         cargarInformacionUnidades();
     }
 

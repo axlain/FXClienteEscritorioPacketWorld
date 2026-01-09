@@ -179,8 +179,8 @@ public class FXMLFormularioUnidadController implements Initializable {
                 int anio = Integer.parseInt(anioTexto);
                 int anioActual = LocalDate.now().getYear();
 
-                if (anio < 1900 || anio > anioActual) {
-                    mensaje += "- El año debe estar entre 1900 y " + anioActual + ".\n";
+                if (anio < 1901 || anio > anioActual) {
+                    mensaje += "- El año debe estar entre 1901 y " + anioActual + ".\n";
                 }
             } catch (NumberFormatException e) {
                 mensaje += "- El año debe ser un número entero válido.\n";

@@ -1,59 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefHeight="520.0" prefWidth="500.0"
-      spacing="15.0"
-      styleClass="card"
-      stylesheets="@utilidad/EstiloVentanaPrincipal.css"
-      xmlns="http://javafx.com/javafx/8"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="clienteescritorio.FXMLFormularioEnvioController">
+<VBox prefHeight="520.0" prefWidth="500.0" spacing="15.0" styleClass="card" stylesheets="@utilidad/EstiloVentanaPrincipal.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="clienteescritorio.FXMLFormularioEnvioController">
 
     <padding>
-        <Insets top="20" right="25" bottom="20" left="25"/>
+        <Insets bottom="20" left="25" right="25" top="20" />
     </padding>
 
     <children>
 
-        <Label fx:id="lblTitulo"
-               text="Registrar Envío"
-               style="-fx-text-fill:#18529D; -fx-font-size:22px; -fx-font-weight:bold;"/>
+        <Label fx:id="lblTitulo" style="-fx-text-fill:#18529D; -fx-font-size:22px; -fx-font-weight:bold;" text="Registrar Envío" />
 
         <VBox spacing="5">
             <children>
-                <Label text="Cliente" style="-fx-font-weight:bold;"/>
-                <ComboBox fx:id="cbCliente" prefWidth="350" promptText="Seleccione un cliente"/>
+                <Label style="-fx-font-weight:bold;" text="Cliente" />
+                <ComboBox fx:id="cbCliente" prefWidth="350" promptText="Seleccione un cliente" />
             </children>
         </VBox>
 
         <VBox spacing="5">
             <children>
-                <Label text="Sucursal origen" style="-fx-font-weight:bold;"/>
-                <ComboBox fx:id="cbSucursal" prefWidth="350" promptText="Seleccione una sucursal"/>
+                <Label style="-fx-font-weight:bold;" text="Sucursal origen" />
+                <ComboBox fx:id="cbSucursal" prefWidth="350" promptText="Seleccione una sucursal" />
             </children>
         </VBox>
 
         <VBox spacing="5">
             <children>
-                <Label text="Destinatario" style="-fx-font-weight:bold;"/>
+                <Label style="-fx-font-weight:bold;" text="Destinatario" />
 
-                <HBox spacing="10" alignment="CENTER_LEFT">
+                <HBox alignment="CENTER_LEFT" spacing="10">
                     <children>
-                        <ComboBox fx:id="cbDestinatario"
-                                  prefWidth="350"
-                                  promptText="Seleccione un destinatario"
-                                  HBox.hgrow="ALWAYS"/>
+                        <ComboBox fx:id="cbDestinatario" prefWidth="350" promptText="Seleccione un destinatario" HBox.hgrow="ALWAYS" />
 
-                        <Button fx:id="btnAgregarDestinatario"
-                                text="+"
-                                onAction="#clickAgregarDestinatario"
-                                style="-fx-background-color:#18529D; -fx-text-fill:white; -fx-font-weight:bold; -fx-cursor:hand;"
-                                prefWidth="40"
-                                minWidth="40"
-                                maxWidth="40"/>
+                        <Button fx:id="btnAgregarDestinatario" onAction="#clickAgregarDestinatario" prefHeight="48.0" prefWidth="26.0" styleClass="button-add" text="+" />
                     </children>
                 </HBox>
             </children>
@@ -62,18 +47,18 @@
 
         <VBox spacing="5">
             <children>
-                <Label text="Conductor" style="-fx-font-weight:bold;"/>
-                <ComboBox fx:id="cbConductor" prefWidth="350" promptText="Seleccione un conductor"/>
+                <Label style="-fx-font-weight:bold;" text="Conductor" />
+                <ComboBox fx:id="cbConductor" prefWidth="350" promptText="Seleccione un conductor" />
             </children>
         </VBox>
 
         <HBox alignment="CENTER" spacing="15">
             <children>
-                <Button fx:id="btnGuardar" text="Guardar" styleClass="button-success" onAction="#clickGuardar"/>
-                <Button fx:id="btnCancelar" text="Cancelar" styleClass="button-secondary" onAction="#clickCancelar"/>
+                <Button fx:id="btnGuardar" onAction="#clickGuardar" styleClass="button-success" text="Guardar" />
+                <Button fx:id="btnCancelar" onAction="#clickCancelar" styleClass="button-secondary" text="Cancelar" />
             </children>
             <VBox.margin>
-                <Insets top="10"/>
+                <Insets top="10" />
             </VBox.margin>
         </HBox>
 
