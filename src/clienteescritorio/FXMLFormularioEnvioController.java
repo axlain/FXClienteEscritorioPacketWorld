@@ -58,10 +58,17 @@ public class FXMLFormularioEnvioController implements Initializable, INotificado
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        cargarClientes();
-        cargarSucursales();     // aquí aplicamos selección automática si ya tenemos idSucursalColaborador
+         cargarClientes();
+        cargarSucursales();
         cargarDestinatarios();
-        cargarConductores();
+
+        // ✅ cuando cambie sucursal, recargar conductores filtrados
+        cbSucursal.setOnAction(e -> {
+            Sucursal sel = cbSucursal.getSelectionModel().getSelectedItem();
+            if (sel != null) {
+                cargarConductoresPorSucursal(sel.getIdSucursal());
+            }
+        });
     }
 
     public void iniciarlizarDatos(Envio envioEdicion, INotificador observador, Integer idCreadoPor, Integer idSucursalColaborador) {
@@ -86,14 +93,27 @@ public class FXMLFormularioEnvioController implements Initializable, INotificado
             cbCliente.getSelectionModel().select(obtenerPosicionCliente(envioEdicion.getIdCliente()));
             cbSucursal.getSelectionModel().select(obtenerPosicionSucursal(envioEdicion.getIdSucursal()));
             cbDestinatario.getSelectionModel().select(obtenerPosicionDestinatario(envioEdicion.getIdDestinatario()));
+
+            // ✅ 1) Cargar conductores de la sucursal del envío
+            cargarConductoresPorSucursal(envioEdicion.getIdSucursal());
+
+            // ✅ 2) Ahora sí seleccionar conductor (ya existe la lista)
             cbConductor.getSelectionModel().select(obtenerPosicionConductor(envioEdicion.getIdConductor()));
 
         } else {
             lblTitulo.setText("Registrar Envío");
-            // auto-seleccionar sucursal del colaborador
+
+            // ✅ 1) Seleccionar automáticamente la sucursal del colaborador
             seleccionarSucursalColaborador();
+
+            // ✅ 2) Cargar conductores de la sucursal que quedó seleccionada
+            Sucursal sel = cbSucursal.getSelectionModel().getSelectedItem();
+            if (sel != null) {
+                cargarConductoresPorSucursal(sel.getIdSucursal());
+            }
         }
     }
+
 
     @FXML
     private void clickGuardar(ActionEvent event) {
@@ -208,17 +228,23 @@ public class FXMLFormularioEnvioController implements Initializable, INotificado
         }
     }
 
-    private void cargarConductores() {
-        HashMap<String, Object> respuesta = ColaboradorImp.obtenerConductores();
+    private void cargarConductoresPorSucursal(int idSucursal) {
+        HashMap<String, Object> respuesta = ColaboradorImp.obtenerConductoresPorSucursal(idSucursal);
+
         if (!(boolean) respuesta.get(Constantes.KEY_ERROR)) {
             List<Colaborador> lista = (List<Colaborador>) respuesta.get(Constantes.KEY_LISTA);
             conductores = FXCollections.observableArrayList(lista);
             cbConductor.setItems(conductores);
+            cbConductor.getSelectionModel().clearSelection();
         } else {
-            Utilidades.mostrarAlertaSimple("Error", respuesta.get(Constantes.KEY_MENSAJE).toString(), Alert.AlertType.ERROR);
-            cerrarVentana();
+            Utilidades.mostrarAlertaSimple(
+                    "Error",
+                    respuesta.get(Constantes.KEY_MENSAJE).toString(),
+                    Alert.AlertType.ERROR
+            );
         }
     }
+
 
     // ✅ método que te faltaba
     private void seleccionarSucursalColaborador() {

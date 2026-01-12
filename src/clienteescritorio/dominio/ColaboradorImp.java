@@ -258,58 +258,88 @@ public class ColaboradorImp {
 
         return respuesta;
     }
-public static Respuesta subirFoto(int idColaborador, byte[] foto){
-    Respuesta respuesta = new Respuesta();
+    public static Respuesta subirFoto(int idColaborador, byte[] foto){
+        Respuesta respuesta = new Respuesta();
 
-   
-    String URL = Constantes.URL_WS + "colaborador/guardar-foto/" + idColaborador;
 
-    try{
-        RespuestaHTTP respuestaAPI = ConexionAPI.peticionBodyBytes(
-                URL,
-                Constantes.PETICION_PUT,
-                foto,
-                Constantes.APPLICATION_OCTET_STREAM
-        );
+        String URL = Constantes.URL_WS + "colaborador/guardar-foto/" + idColaborador;
+
+        try{
+            RespuestaHTTP respuestaAPI = ConexionAPI.peticionBodyBytes(
+                    URL,
+                    Constantes.PETICION_PUT,
+                    foto,
+                    Constantes.APPLICATION_OCTET_STREAM
+            );
+
+            if(respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK){
+                Gson gson = new Gson();
+                respuesta = gson.fromJson(respuestaAPI.getContenido(), Respuesta.class);
+            } else {
+                respuesta.setError(true);
+                switch(respuestaAPI.getCodigo()){
+                    case Constantes.ERROR_MALFORMED_URL:
+                        respuesta.setMensaje(Constantes.MSJ_ERROR_URL);
+                        break;
+                    case Constantes.ERROR_PETICION:
+                        respuesta.setMensaje(Constantes.MSJ_ERROR_PETICION);
+                        break;
+                    case HttpURLConnection.HTTP_BAD_REQUEST:
+                        respuesta.setMensaje("No fue posible subir la fotografía. Verifique la información.");
+                        break;
+                    default:
+                        respuesta.setMensaje("Lo sentimos, no fue posible subir la fotografía en este momento.");
+                }
+            }
+        } catch(Exception e){
+            respuesta.setError(true);
+            respuesta.setMensaje(e.getMessage());
+        }
+
+        return respuesta;
+    }
+
+
+    public static Colaborador obtenerFoto(int idColaborador){
+        String URL = Constantes.URL_WS + "colaborador/obtener-foto/" + idColaborador;
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionGET(URL);
 
         if(respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK){
             Gson gson = new Gson();
-            respuesta = gson.fromJson(respuestaAPI.getContenido(), Respuesta.class);
-        } else {
-            respuesta.setError(true);
-            switch(respuestaAPI.getCodigo()){
-                case Constantes.ERROR_MALFORMED_URL:
-                    respuesta.setMensaje(Constantes.MSJ_ERROR_URL);
-                    break;
-                case Constantes.ERROR_PETICION:
-                    respuesta.setMensaje(Constantes.MSJ_ERROR_PETICION);
-                    break;
-                case HttpURLConnection.HTTP_BAD_REQUEST:
-                    respuesta.setMensaje("No fue posible subir la fotografía. Verifique la información.");
-                    break;
-                default:
-                    respuesta.setMensaje("Lo sentimos, no fue posible subir la fotografía en este momento.");
-            }
+            return gson.fromJson(respuestaAPI.getContenido(), Colaborador.class);
         }
-    } catch(Exception e){
-        respuesta.setError(true);
-        respuesta.setMensaje(e.getMessage());
+        return null;
+    }
+    public static HashMap<String, Object> obtenerConductoresPorSucursal(int idSucursal){
+        HashMap<String, Object> respuesta = new LinkedHashMap();
+        String URL = Constantes.URL_WS + "colaborador/obtener-conductores-sucursal?idSucursal=" + idSucursal;
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionGET(URL);
+
+        if(respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK){
+            Gson gson = new Gson();
+            Type tipoLista = new TypeToken<List<Colaborador>>(){}.getType();
+            List<Colaborador> lista = gson.fromJson(respuestaAPI.getContenido(), tipoLista);
+            respuesta.put(Constantes.KEY_ERROR, false);
+            respuesta.put(Constantes.KEY_LISTA, lista);
+        } else {
+            respuesta.put(Constantes.KEY_ERROR, true);
+            respuesta.put(Constantes.KEY_MENSAJE, "No fue posible obtener conductores por sucursal.");
+        }
+        return respuesta;
+    }
+    
+    public static Colaborador obtenerPorId(int idColaborador){
+        String URL = Constantes.URL_WS + "colaborador/obtener/" + idColaborador;
+        RespuestaHTTP resp = ConexionAPI.peticionGET(URL);
+
+        if(resp.getCodigo() == HttpURLConnection.HTTP_OK){
+            Gson gson = new Gson();
+            return gson.fromJson(resp.getContenido(), Colaborador.class);
+        }
+        return null;
     }
 
-    return respuesta;
-}
-
-
-public static Colaborador obtenerFoto(int idColaborador){
-    String URL = Constantes.URL_WS + "colaborador/obtener-foto/" + idColaborador;
-    RespuestaHTTP respuestaAPI = ConexionAPI.peticionGET(URL);
-
-    if(respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK){
-        Gson gson = new Gson();
-        return gson.fromJson(respuestaAPI.getContenido(), Colaborador.class);
-    }
-    return null;
-}
+    
 
 
 }

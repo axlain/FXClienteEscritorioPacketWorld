@@ -1,6 +1,7 @@
 
 package clienteescritorio;
 
+import clienteescritorio.dominio.ColaboradorImp;
 import clienteescritorio.dominio.EnvioImp;
 import clienteescritorio.interfaz.INotificador;
 import clienteescritorio.pojo.Colaborador;
@@ -201,7 +202,21 @@ public class FXMLAdministracionEnvioController implements Initializable, INotifi
             FXMLFormularioEnvioController controlador = cargador.getController();
 
             Integer idCreadoPor = (colaboradorSesion != null) ? colaboradorSesion.getIdColaborador() : null;
-            Integer idSucursalColab = (colaboradorSesion != null) ? colaboradorSesion.getIdSucursal() : null; 
+
+            if (idCreadoPor == null) {
+                Utilidades.mostrarAlertaSimple("Sesión no válida", "No se detectó el colaborador en sesión.", Alert.AlertType.ERROR);
+                return;
+            }
+
+            // ✅ refrescar desde backend para traer idSucursal actualizado
+            Colaborador actualizado = ColaboradorImp.obtenerPorId(idCreadoPor);
+            if (actualizado != null) {
+                this.colaboradorSesion = actualizado; // actualizar sesión en memoria
+            }
+
+Integer idSucursalColab = (colaboradorSesion != null) ? colaboradorSesion.getIdSucursal() : null;
+
+controlador.iniciarlizarDatos(envio, this, idCreadoPor, idSucursalColab);
 
             controlador.iniciarlizarDatos(envio, this, idCreadoPor, idSucursalColab);
 

@@ -22,7 +22,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
-
 public class FXMLAsignarConductorController implements Initializable {
 
     @FXML
@@ -35,40 +34,48 @@ public class FXMLAsignarConductorController implements Initializable {
     private Button btnAsignar;
     @FXML
     private Button btnCancelar;
-    
-    
-    private ObservableList<Colaborador> colaboradoresConductores; 
+
+    private ObservableList<Colaborador> colaboradoresConductores;
     private INotificador observador;
-    
-    private Unidad unidad; 
-    private Colaborador colaborador; 
+
+    private Unidad unidad;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        cargarColaboradoresConductores();
-    }    
-    
+        // IMPORTANT: No cargar aquí porque unidad todavía no existe
+        // cargarColaboradoresConductores();
+    }
+
     public void iniciarlizarDatos(Unidad unidad, INotificador observador){
         this.observador = observador;
         this.unidad = unidad;
 
-        if(unidad != null){
+        if (unidad != null) {
             lblUnidad.setText(
                 unidad.getVin() + " - " + unidad.getModelo() + " - " + unidad.getAnio()
             );
-        Integer idConductor = unidad.getIdConductor();
 
-        if (idConductor != null && idConductor > 0) {
-            int posicionConductor = obtenerPosicionColaboradorConductor(idConductor);
-            if (posicionConductor != -1) {
-                cbConductores.getSelectionModel().select(posicionConductor);
+            // ✅ Cargar solo conductores de la sucursal de la unidad
+            cargarColaboradoresConductoresPorSucursal();
+
+            // Seleccionar conductor si ya tiene uno asignado
+            Integer idConductor = unidad.getIdConductor();
+            if (idConductor != null && idConductor > 0) {
+                int posicionConductor = obtenerPosicionColaboradorConductor(idConductor);
+                if (posicionConductor != -1) {
+                    cbConductores.getSelectionModel().select(posicionConductor);
+                }
             }
-        }
-
-            
+        } else {
+            Utilidades.mostrarAlertaSimple(
+                "Error",
+                "No se recibió la unidad a asignar.",
+                Alert.AlertType.ERROR
+            );
+            cerrarVentana();
         }
     }
-    
+
     @FXML
     private void clickAsignar(ActionEvent event) {
         asignarConductor();
@@ -78,10 +85,11 @@ public class FXMLAsignarConductorController implements Initializable {
     private void clickCancelar(ActionEvent event) {
         cerrarVentana();
     }
-    
+
     private void cerrarVentana(){
         ((Stage) lblTitulo.getScene().getWindow()).close();
     }
+
     private void asignarConductor() {
         Colaborador seleccionado = cbConductores.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
@@ -94,7 +102,7 @@ public class FXMLAsignarConductorController implements Initializable {
         }
 
         Respuesta respuesta = ColaboradorImp.asignarConductor(
-                unidad.getIdUnidad(), 
+                unidad.getIdUnidad(),
                 seleccionado.getIdColaborador()
         );
 
@@ -118,29 +126,47 @@ public class FXMLAsignarConductorController implements Initializable {
         }
     }
 
-    private void cargarColaboradoresConductores(){
-        HashMap<String,Object> respuesta = ColaboradorImp.obtenerConductores();
-        if( !(boolean) respuesta.get(Constantes.KEY_ERROR)){
-            List<Colaborador> colaboradorConductorAPI = (List<Colaborador>) respuesta.get(Constantes.KEY_LISTA);
+    // ✅ Nuevo: carga filtrada por sucursal
+    private void cargarColaboradoresConductoresPorSucursal(){
+        Integer idSucursal = unidad.getIdSucursal(); // <- asegúrate que tu POJO Unidad tenga este getter
+
+        if (idSucursal == null || idSucursal <= 0) {
+            Utilidades.mostrarAlertaSimple(
+                "Sucursal no válida",
+                "No se pudo identificar la sucursal de la unidad.",
+                Alert.AlertType.ERROR
+            );
+            cerrarVentana();
+            return;
+        }
+
+        HashMap<String,Object> respuesta = ColaboradorImp.obtenerConductoresPorSucursal(idSucursal);
+
+        if (!(boolean) respuesta.get(Constantes.KEY_ERROR)) {
+            List<Colaborador> lista = (List<Colaborador>) respuesta.get(Constantes.KEY_LISTA);
+
             colaboradoresConductores = FXCollections.observableArrayList();
-            colaboradoresConductores.addAll(colaboradorConductorAPI);
+            colaboradoresConductores.addAll(lista);
             cbConductores.setItems(colaboradoresConductores);
-        }else{
-            Utilidades.mostrarAlertaSimple("Error", 
-                    respuesta.get(Constantes.KEY_MENSAJE).toString(), Alert.AlertType.ERROR);
+
+        } else {
+            Utilidades.mostrarAlertaSimple(
+                "Error",
+                respuesta.get(Constantes.KEY_MENSAJE).toString(),
+                Alert.AlertType.ERROR
+            );
             cerrarVentana();
         }
     }
-    
+
     private int obtenerPosicionColaboradorConductor(Integer idColaborador){
-        if (idColaborador == null) return -1;
+        if (idColaborador == null || colaboradoresConductores == null) return -1;
 
         for(int i = 0; i < colaboradoresConductores.size(); i++){
             if (colaboradoresConductores.get(i).getIdColaborador() == idColaborador){
-                return i; 
+                return i;
             }
         }
-        return -1; 
+        return -1;
     }
-    
 }
