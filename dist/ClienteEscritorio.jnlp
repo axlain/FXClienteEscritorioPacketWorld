@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="ClienteEscritorio.jar" size="5172329" download="eager" />
+    <jar href="ClienteEscritorio.jar" size="5172852" download="eager" />
     <jar href="lib\gson-2.9.1.jar" size="265030" download="eager" />
   </resources>
   <jfx:javafx-desc  width="800" height="600" main-class="clienteescritorio.ClienteEscritorio"  name="ClienteEscritorio" />

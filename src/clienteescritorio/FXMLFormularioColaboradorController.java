@@ -76,6 +76,9 @@ public class FXMLFormularioColaboradorController implements Initializable {
         cargarRoles();
         cargarSucursales();
         configurarListenerRol();
+        configurarCamposSoloLetras(tfNombre);
+        configurarCamposSoloLetras(tfApellidoPaterno);
+        configurarCamposSoloLetras(tfApellidoMaterno);
     }
     
     public void iniciarlizarDatos(Colaborador colaboradorEdicion, INotificador observador){
@@ -110,6 +113,15 @@ public class FXMLFormularioColaboradorController implements Initializable {
         } else {
             lblTitulo.setText("Registrar Colaborador");
         }
+    }
+    
+    private void configurarCamposSoloLetras(TextField campo) {
+        campo.setTextFormatter(new javafx.scene.control.TextFormatter<>(change -> {
+            if (change.getText().matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]*")) {
+                return change;
+            }
+            return null;
+        }));
     }
 
     @FXML
