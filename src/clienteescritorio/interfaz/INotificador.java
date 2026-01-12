@@ -1,5 +1,9 @@
 package clienteescritorio.interfaz;
 
 public interface INotificador {
-    public void notificarOperacionExitosa(String operacion, String nombre);
+    void notificarOperacionExitosa(String operacion, String nombre);
+
+    default void notificarFotoActualizada(int idColaborador) {
+       
+    }
 }

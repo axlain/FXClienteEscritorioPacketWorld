@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="15" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="clienteescritorio.FXMLFotoColaboradorController"
+      styleClass="card" stylesheets="@utilidad/EstiloVentanaPrincipal.css">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Fotografía del colaborador"
+           style="-fx-text-fill:#18529D; -fx-font-size:20; -fx-font-weight:bold;" />
+
+    <ImageView fx:id="ivFoto" fitWidth="220" fitHeight="220" preserveRatio="true" smooth="true"/>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Seleccionar..." onAction="#clickSeleccionar" styleClass="button-secondary"/>
+        <Button fx:id="btnGuardar" text="Guardar" onAction="#clickGuardar" styleClass="button-success"/>
+        <Button text="Cancelar" onAction="#clickCancelar" styleClass="button"/>
+    </HBox>
+
+</VBox>

@@ -63,12 +63,21 @@ public class FXMLAdministracionColaboradoresController implements Initializable,
     @FXML
     private Button btnSubirFoto;
     private ObservableList<Colaborador> colaboradores;
-    
+    private Colaborador colaboradorSesion;
+    private INotificador observadorPrincipal;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarTabla();
         cargarInformacionColaboradores();
     }
+    public void inicializar(Colaborador colaboradorSesion, INotificador observadorPrincipal) {
+    this.colaboradorSesion = colaboradorSesion;
+    this.observadorPrincipal = observadorPrincipal;
+}
+
+
+
+
     
 private void configurarTabla(){
     tcNumeroPersonal.setCellValueFactory(new PropertyValueFactory("numeroPersonal"));
@@ -209,48 +218,59 @@ private void configurarTabla(){
         }
     }
 
-    @FXML
+@FXML
 private void clickSubirFoto(ActionEvent event) {
     Colaborador seleccionado = tvColaboradores.getSelectionModel().getSelectedItem();
-    
+
     if (seleccionado == null) {
-        Utilidades.mostrarAlertaSimple("Seleccionar colaborador",
+        Utilidades.mostrarAlertaSimple(
+                "Seleccionar colaborador",
                 "Debe seleccionar un colaborador de la tabla para subir su foto.",
-                Alert.AlertType.WARNING);
+                Alert.AlertType.WARNING
+        );
         return;
     }
-    
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Seleccionar fotografía");
-    fileChooser.getExtensionFilters().add(
-        new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg")
-    );
-    
-    Stage stage = (Stage) btnSubirFoto.getScene().getWindow();
-    File archivo = fileChooser.showOpenDialog(stage);
-    
-    if (archivo != null) {
-        try {
-            byte[] fotoBytes = Files.readAllBytes(archivo.toPath());
-            
-            Respuesta respuesta = ColaboradorImp.subirFoto(seleccionado.getIdColaborador(), fotoBytes);
-            
-            if (!respuesta.isError()) {
-                Utilidades.mostrarAlertaSimple("Foto subida",
-                        respuesta.getMensaje(),
-                        Alert.AlertType.INFORMATION);
-            } else {
-                Utilidades.mostrarAlertaSimple("Error",
-                        respuesta.getMensaje(),
-                        Alert.AlertType.ERROR);
-            }
-        } catch (Exception e) {
-            Utilidades.mostrarAlertaSimple("Error",
-                    "No se pudo cargar la imagen.",
-                    Alert.AlertType.ERROR);
-        }
+
+    irVentanaFoto(seleccionado.getIdColaborador());
+}
+
+private void irVentanaFoto(int idColaborador) {
+    try {
+        FXMLLoader cargador = new FXMLLoader(getClass().getResource("FXMLFotoColaborador.fxml"));
+        Parent vista = cargador.load();
+
+        FXMLFotoColaboradorController controlador = cargador.getController();
+        controlador.inicializar(idColaborador, this); // <- NOTIFICADOR
+
+        Stage escenario = new Stage();
+        escenario.setScene(new Scene(vista));
+        escenario.setTitle("Foto del Colaborador");
+        escenario.initModality(Modality.APPLICATION_MODAL);
+        escenario.showAndWait();
+
+    } catch (IOException ex) {
+        ex.printStackTrace();
+        Utilidades.mostrarAlertaSimple("Error", "No se pudo abrir la ventana de foto.", Alert.AlertType.ERROR);
     }
 }
+
+@Override
+public void notificarFotoActualizada(int idColaborador) {
+    int index = tvColaboradores.getSelectionModel().getSelectedIndex();
+    cargarInformacionColaboradores();
+
+    if (index >= 0 && index < tvColaboradores.getItems().size()) {
+        tvColaboradores.getSelectionModel().select(index);
+    }
+
+    if (observadorPrincipal != null) {
+        observadorPrincipal.notificarFotoActualizada(idColaborador);
+    }
+}
+
+
+
+
     @Override
     public void notificarOperacionExitosa(String operacion, String nombre) {
         System.out.println("Operación: " + operacion + ", nombre colaborador: " + nombre);

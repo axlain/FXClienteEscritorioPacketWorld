@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.ResourceBundle;
+import clienteescritorio.interfaz.INotificador;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,7 +28,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
-public class FXMLPrincipalController implements Initializable {
+public class FXMLPrincipalController implements Initializable, INotificador {
+
 
     @FXML private Label rol;
     @FXML private Label name;
@@ -167,18 +169,23 @@ public class FXMLPrincipalController implements Initializable {
     }
 
     @FXML
-    private void clickColaboradores(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionColaboradores.fxml"));
-            Parent vista = loader.load();
-            borderPaneContenedor.setCenter(vista);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Utilidades.mostrarAlertaSimple("Error",
-                    "No se pudo cargar el módulo de colaboradores",
-                    Alert.AlertType.ERROR);
-        }
+private void clickColaboradores(ActionEvent event) {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("FXMLAdministracionColaboradores.fxml"));
+        Parent vista = loader.load();
+
+        FXMLAdministracionColaboradoresController controller = loader.getController();
+        controller.inicializar(colaboradorSesion, this); // ✅ ESTILO RAMÓN
+
+        borderPaneContenedor.setCenter(vista);
+    } catch (Exception e) {
+        e.printStackTrace();
+        Utilidades.mostrarAlertaSimple("Error",
+                "No se pudo cargar el módulo de colaboradores",
+                Alert.AlertType.ERROR);
     }
+}
+
 
     @FXML
     private void clickUnidades(ActionEvent event) {
@@ -257,6 +264,18 @@ private void clickPaquetes(ActionEvent event) {
                 Alert.AlertType.ERROR);
     }
 }
+@Override
+public void notificarFotoActualizada(int idColaborador) {
+    if (colaboradorSesion != null && idColaborador == colaboradorSesion.getIdColaborador()) {
+        cargarFotoHeader(idColaborador); // ✅ refresca el avatar del header
+    }
+}
+
+@Override
+public void notificarOperacionExitosa(String operacion, String nombre) {
+
+}
+
 
 
 }
