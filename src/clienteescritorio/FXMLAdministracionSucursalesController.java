@@ -101,7 +101,36 @@ public class FXMLAdministracionSucursalesController implements Initializable, IN
     
     @FXML
     private void clickBuscar(ActionEvent event) {
+        String filtro = tfBuscar.getText().trim();
+
+        if (filtro.isEmpty()) {
+            Utilidades.mostrarAlertaSimple(
+                    "Campo vacío",
+                    "Ingrese el código, nombre corto, municipio o estado para buscar.",
+                    Alert.AlertType.WARNING
+            );
+            return;
+        }
+
+        HashMap<String, Object> respuesta = SucursalImp.buscar(filtro);
+        boolean esError = (boolean) respuesta.get("error");
+
+        if (!esError) {
+            List<Sucursal> lista = (List<Sucursal>) respuesta.get(Constantes.KEY_LISTA);
+
+            ObservableList<Sucursal> sucursalesBusqueda =
+                    FXCollections.observableArrayList(lista);
+
+            tvSucursales.setItems(sucursalesBusqueda);
+        } else {
+            Utilidades.mostrarAlertaSimple(
+                    "Error en la búsqueda",
+                    respuesta.get("mensaje").toString(),
+                    Alert.AlertType.ERROR
+            );
+        }
     }
+
 
     @FXML
     private void clickLimpiarBusqueda(ActionEvent event) {

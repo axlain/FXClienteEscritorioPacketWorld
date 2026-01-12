@@ -42,7 +42,7 @@
                     <Button fx:id="btnEditar" text="Editar" styleClass="button" onAction="#clickEditar"/>
                     <Button fx:id="btnEliminar" text="Eliminar" styleClass="button-danger" onAction="#clickEliminar"/>
                     <Button fx:id="btnSubirFoto" text="Subir foto" styleClass="button-secondary" onAction="#clickSubirFoto"/>
-                    <Button fx:id="btnAsignarUnidad" text="Asignar Unidad" styleClass="button-secondary" onAction="#clickAsignarUnidad"/>
+                    
                 </children>
             </HBox>
         </VBox>

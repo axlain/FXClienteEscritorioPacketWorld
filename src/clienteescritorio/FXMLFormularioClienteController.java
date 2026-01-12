@@ -189,30 +189,34 @@ public class FXMLFormularioClienteController implements Initializable {
 
     @FXML
     private void clicBuscarCP(ActionEvent event) {
-        String cp = tfCodigoPostal.getText();
-
-        if (cp == null || cp.trim().isEmpty()) {
-            Utilidades.mostrarAlertaSimple(
-                "Advertencia",
-                "Primero debes ingresar un Código Postal.",
-                Alert.AlertType.WARNING
-            );
-            return;
-        }
+        String cp = tfCodigoPostal.getText().trim();
 
         if (!cp.matches("\\d{5}")) {
-            Utilidades.mostrarAlertaSimple(
-                "Advertencia",
-                "El Código Postal debe tener 5 dígitos.",
-                Alert.AlertType.WARNING
-            );
+            Utilidades.mostrarAlertaSimple("Advertencia", "Ingresa un CP válido de 5 dígitos.", Alert.AlertType.WARNING);
             return;
         }
 
-        HashMap<String, Object> respuesta = CatalogoImp.obtenerDatosCP(cp);
-        if (respuesta == null) return;
+        if (tfCodigoPostal.getScene() != null) {
+            tfCodigoPostal.getScene().setCursor(javafx.scene.Cursor.WAIT);
+        }
 
-        procesarRespuestaCP(respuesta, cp);
+        try {
+            HashMap<String, Object> respuestaDatos = CatalogoImp.obtenerDatosCP(cp);
+
+            if (!(boolean) respuestaDatos.get(Constantes.KEY_ERROR)) {
+                HashMap<String, Object> respuestaColonias = CatalogoImp.obtenerColoniasPorCP(cp);
+                respuestaDatos.put("colonias_extra", respuestaColonias);
+            }
+
+            procesarRespuestaCP(respuestaDatos, cp);
+
+        } catch (Exception e) {
+            Utilidades.mostrarAlertaSimple("Error", "Error de conexión: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+
+        if (tfCodigoPostal.getScene() != null) {
+            tfCodigoPostal.getScene().setCursor(javafx.scene.Cursor.DEFAULT);
+        }
     }
 
     private void limitarTelefono() {
@@ -247,18 +251,37 @@ public class FXMLFormularioClienteController implements Initializable {
         if (!(boolean) respuesta.get(Constantes.KEY_ERROR)) {
             RSDatosCodigoPostal datos = (RSDatosCodigoPostal) respuesta.get(Constantes.KEY_OBJETO);
 
-            cbPais.getSelectionModel().select(obtenerPosicionPais(datos.getIdPais()));
-            cargarEstado();
-            cbEstado.getSelectionModel().select(obtenerPosicionEstado(datos.getIdEstado()));
-            cargarMunicipio();
-            cbMunicipio.getSelectionModel().select(obtenerPosicionMunicipio(datos.getIdMunicipio()));
+            cbPais.setDisable(false);
+            cbEstado.setDisable(false);
+            cbMunicipio.setDisable(false);
 
-            HashMap<String, Object> respCol = CatalogoImp.obtenerColoniasPorCP(cp);
-            colonias = FXCollections.observableArrayList(
-                    (List<Colonia>) respCol.get(Constantes.KEY_LISTA)
-            );
-            cbColonia.setItems(colonias);
-            cbColonia.setDisable(false);
+            // País
+            int posPais = obtenerPosicionPais(datos.getIdPais());
+            cbPais.getSelectionModel().select(posPais);
+
+            // Estado
+            cargarEstado();
+            int posEstado = obtenerPosicionEstado(datos.getIdEstado());
+            cbEstado.getSelectionModel().select(posEstado);
+
+            // Municipio
+            cargarMunicipio();
+            int posMunicipio = obtenerPosicionMunicipio(datos.getIdMunicipio());
+            cbMunicipio.getSelectionModel().select(posMunicipio);
+
+            // Colonias
+            HashMap<String, Object> respColonias = (HashMap<String, Object>) respuesta.get("colonias_extra");
+            if (respColonias != null && !(boolean) respColonias.get(Constantes.KEY_ERROR)) {
+                List<Colonia> listaCols = (List<Colonia>) respColonias.get(Constantes.KEY_LISTA);
+                colonias = FXCollections.observableArrayList(listaCols);
+                cbColonia.setItems(colonias);
+                cbColonia.setDisable(false);
+                if (colonias.size() == 1) cbColonia.getSelectionModel().select(0);
+            }
+
+        } else {
+            Utilidades.mostrarAlertaSimple("Sin resultados", "No se encontró información para el CP: " + cp, Alert.AlertType.INFORMATION);
+            limpiarCombosDireccion();
         }
     }
 
@@ -298,5 +321,13 @@ public class FXMLFormularioClienteController implements Initializable {
         for (int i = 0; i < municipios.size(); i++)
             if (municipios.get(i).getIdMunicipio() == id) return i;
         return -1;
+    }
+    
+    private void limpiarCombosDireccion() {
+        cbPais.getSelectionModel().clearSelection();
+        cbEstado.getItems().clear();
+        cbMunicipio.getItems().clear();
+        cbColonia.getItems().clear();
+        cbColonia.setDisable(true);
     }
 }

@@ -59,8 +59,6 @@ public class FXMLAdministracionColaboradoresController implements Initializable,
     @FXML
     private Button btnEliminar;
     @FXML
-    private Button btnAsignarUnidad;
-    @FXML
     private Button btnSubirFoto;
     private ObservableList<Colaborador> colaboradores;
     private Colaborador colaboradorSesion;
@@ -176,19 +174,6 @@ private void configurarTabla(){
         }
     }
 
-    @FXML
-    private void clickAsignarUnidad(ActionEvent event) {
-        Colaborador colaborador = tvColaboradores.getSelectionModel().getSelectedItem();
-        if(colaborador != null){
-            if(colaborador.getIdRol() != 3){
-                Utilidades.mostrarAlertaSimple("Acción no permitida", "Solo se pueden asignar unidades a colaboradores con rol Conductor", Alert.AlertType.WARNING);
-            } else {
-                Utilidades.mostrarAlertaSimple("Funcionalidad pendiente", "La asignación de unidades se implementará más adelante.", Alert.AlertType.INFORMATION);
-            }
-        } else {
-           Utilidades.mostrarAlertaSimple("Selecciona un colaborador", "Para asignar unidad al colaborador, primero debes seleccionarlo de la tabla", Alert.AlertType.WARNING);
-        }
-    }
     
     private void irFormulario(Colaborador colaborador){
         try{

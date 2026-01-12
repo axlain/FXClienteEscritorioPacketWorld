@@ -27,6 +27,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 
 public class FXMLFormularioSucursalController implements Initializable {
 
@@ -258,108 +259,110 @@ public class FXMLFormularioSucursalController implements Initializable {
             cerrarVentana();
         }
     }
-    
-    
 
     private int obtenerPosicionPais(int idPais){
+        if (paises == null || paises.isEmpty()) return -1;
         for(int i = 0; i < paises.size(); i++){
-            if(paises.get(i).getIdPais()== idPais){
+            if(paises.get(i).getIdPais() == idPais){
                 return i; 
-            }      
+            }
         }
         return -1; 
     }
+
     private int obtenerPosicionEstado(int idEstado){
+        if (estados == null || estados.isEmpty()) return -1;
         for(int i = 0; i < estados.size(); i++){
-            if(estados.get(i).getIdEstado()== idEstado){
+            if(estados.get(i).getIdEstado() == idEstado){
                 return i; 
-            }      
+            }
         }
         return -1; 
     }
+
     private int obtenerPosicionMunicipio(int idMunicipio){
+        if (municipios == null || municipios.isEmpty()) return -1;
         for(int i = 0; i < municipios.size(); i++){
-            if(municipios.get(i).getIdMunicipio()== idMunicipio){
+            if(municipios.get(i).getIdMunicipio() == idMunicipio){
                 return i; 
-            }      
+            }
         }
         return -1; 
     }
-    private int obtenerPosicionColonia(int idColonias){
+
+    private int obtenerPosicionColonia(int idColonia){
+        if (colonias == null || colonias.isEmpty()) return -1;
         for(int i = 0; i < colonias.size(); i++){
-            if(colonias.get(i).getIdColonia()== idColonias){
+            if(colonias.get(i).getIdColonia() == idColonia){
                 return i; 
-            }      
+            }
         }
         return -1; 
     }
+
 
     @FXML
     private void clicBuscarCP(ActionEvent event) {
-        String cp = tfCodigoPostal.getText();
+        String cp = tfCodigoPostal.getText().trim();
 
-        if (cp.length() != 5 || !cp.matches("\\d+")) {
+        if (!cp.matches("\\d{5}")) {
             Utilidades.mostrarAlertaSimple("Advertencia", "Ingresa un CP válido de 5 dígitos.", Alert.AlertType.WARNING);
             return;
         }
 
-        // Cambiar cursor para indicar que "algo está pasando"
-        // Aunque se trabe, al menos el usuario ve el reloj de arena
         if (tfCodigoPostal.getScene() != null) {
             tfCodigoPostal.getScene().setCursor(javafx.scene.Cursor.WAIT);
         }
 
-        try { 
-            // Pedimos los datos generales 
+        try {
             HashMap<String, Object> respuestaDatos = CatalogoImp.obtenerDatosCP(cp);
-       
-            // Si encontró el CP, pedimos las colonias inmediatamente
+
             if (!(boolean) respuestaDatos.get(Constantes.KEY_ERROR)) {
                 HashMap<String, Object> respuestaColonias = CatalogoImp.obtenerColoniasPorCP(cp);
-                // Las metemos en el mismo mapa para procesar todo junto
-                respuestaDatos.put("colonias_extra", respuestaColonias); 
+                respuestaDatos.put("colonias_extra", respuestaColonias);
             }
-            // Llenar combos
+
             procesarRespuestaCP(respuestaDatos, cp);
 
         } catch (Exception e) {
             Utilidades.mostrarAlertaSimple("Error", "Error de conexión: " + e.getMessage(), Alert.AlertType.ERROR);
         }
-        // Restaurar cursor y UI pase lo que pase
+
         if (tfCodigoPostal.getScene() != null) {
             tfCodigoPostal.getScene().setCursor(javafx.scene.Cursor.DEFAULT);
         }
-        
     }
+
     private void procesarRespuestaCP(HashMap<String, Object> respuesta, String cp) {
         if (!(boolean) respuesta.get(Constantes.KEY_ERROR)) {
             RSDatosCodigoPostal datos = (RSDatosCodigoPostal) respuesta.get(Constantes.KEY_OBJETO);
 
-            // 1. País
+            cbPais.setDisable(false);
+            cbEstado.setDisable(false);
+            cbMunicipio.setDisable(false);
+
+            // País
             int posPais = obtenerPosicionPais(datos.getIdPais());
             cbPais.getSelectionModel().select(posPais);
-            
-            // 2. Estado 
-            cargarEstado(); 
+
+            // Estado
+            cargarEstado();
             int posEstado = obtenerPosicionEstado(datos.getIdEstado());
             cbEstado.getSelectionModel().select(posEstado);
-            
-            // 3. Municipio 
+
+            // Municipio
             cargarMunicipio();
             int posMunicipio = obtenerPosicionMunicipio(datos.getIdMunicipio());
             cbMunicipio.getSelectionModel().select(posMunicipio);
-            
-            // 4. Colonias 
+
+            // Colonias
             HashMap<String, Object> respColonias = (HashMap<String, Object>) respuesta.get("colonias_extra");
-            if(respColonias != null && !(boolean) respColonias.get(Constantes.KEY_ERROR)){
+            if (respColonias != null && !(boolean) respColonias.get(Constantes.KEY_ERROR)) {
                 List<Colonia> listaCols = (List<Colonia>) respColonias.get(Constantes.KEY_LISTA);
                 colonias = FXCollections.observableArrayList(listaCols);
                 cbColonia.setItems(colonias);
                 cbColonia.setDisable(false);
-                
-                // Si solo hay una, la seleccionamos
                 if (colonias.size() == 1) cbColonia.getSelectionModel().select(0);
-                cbColonia.show(); 
             }
 
         } else {

@@ -127,5 +127,35 @@ public class SucursalImp {
         }
         return respuesta;
     }
+   
+    public static HashMap<String, Object> buscar(String filtro){
+        HashMap<String, Object> respuesta = new HashMap<>();
+        String URL = Constantes.URL_WS + "sucursal/buscar?filtro=" + filtro;
+
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionGET(URL);
+
+        if (respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK){
+            Gson gson = new Gson();
+            Type tipoLista = new TypeToken<List<Sucursal>>(){}.getType();
+            List<Sucursal> sucursales = gson.fromJson(respuestaAPI.getContenido(), tipoLista);
+
+            respuesta.put(Constantes.KEY_ERROR, false);
+            respuesta.put(Constantes.KEY_LISTA, sucursales);
+        } else {
+            respuesta.put(Constantes.KEY_ERROR, true);
+            switch (respuestaAPI.getCodigo()){
+                case Constantes.ERROR_MALFORMED_URL:
+                    respuesta.put(Constantes.KEY_MENSAJE, Constantes.MSJ_ERROR_URL);
+                    break;
+                case Constantes.ERROR_PETICION:
+                    respuesta.put(Constantes.KEY_MENSAJE, Constantes.MSJ_ERROR_PETICION);
+                    break;
+                default:
+                    respuesta.put(Constantes.KEY_MENSAJE, "No fue posible realizar la búsqueda de sucursales.");
+            }
+        }
+        return respuesta;
+    }
+
 
 }
