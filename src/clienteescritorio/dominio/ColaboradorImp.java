@@ -258,24 +258,22 @@ public class ColaboradorImp {
 
         return respuesta;
     }
-    public static Respuesta subirFoto(int idColaborador, byte[] foto){
+public static Respuesta subirFoto(int idColaborador, byte[] foto){
     Respuesta respuesta = new Respuesta();
-    String URL = Constantes.URL_WS + "colaborador/subir-foto/" + idColaborador;
+
+   
+    String URL = Constantes.URL_WS + "colaborador/guardar-foto/" + idColaborador;
 
     try{
-        Gson gson = new Gson();
-        Colaborador col = new Colaborador();
-        col.setFotoBase64(java.util.Base64.getEncoder().encodeToString(foto));
-
-        String parametrosJSON = gson.toJson(col);
-        RespuestaHTTP respuestaAPI = ConexionAPI.peticionBody(
+        RespuestaHTTP respuestaAPI = ConexionAPI.peticionBodyBytes(
                 URL,
                 Constantes.PETICION_PUT,
-                parametrosJSON,
-                Constantes.APPLICATION_JSON
+                foto,
+                Constantes.APPLICATION_OCTET_STREAM
         );
 
         if(respuestaAPI.getCodigo() == HttpURLConnection.HTTP_OK){
+            Gson gson = new Gson();
             respuesta = gson.fromJson(respuestaAPI.getContenido(), Respuesta.class);
         } else {
             respuesta.setError(true);
@@ -300,6 +298,7 @@ public class ColaboradorImp {
 
     return respuesta;
 }
+
 
 public static Colaborador obtenerFoto(int idColaborador){
     String URL = Constantes.URL_WS + "colaborador/obtener-foto/" + idColaborador;

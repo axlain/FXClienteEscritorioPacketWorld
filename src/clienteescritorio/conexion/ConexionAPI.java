@@ -88,4 +88,44 @@ public class ConexionAPI {
         }
         return res; 
     }
+    public static RespuestaHTTP peticionBodyBytes(String URL, String metodoHTTP, byte[] body, String contentType){
+    RespuestaHTTP respuesta = new RespuestaHTTP();
+    try{
+        URL urlWS = new URL(URL);
+        HttpURLConnection conexionHTTP = (HttpURLConnection) urlWS.openConnection();
+        conexionHTTP.setRequestMethod(metodoHTTP);
+
+        // Content-Type para binario
+        conexionHTTP.setRequestProperty("Content-Type", contentType);
+        conexionHTTP.setRequestProperty("Accept", Constantes.APPLICATION_JSON);
+
+        conexionHTTP.setDoOutput(true);
+
+        try (OutputStream os = conexionHTTP.getOutputStream()) {
+            os.write(body);
+            os.flush();
+        }
+
+        int codigo = conexionHTTP.getResponseCode();
+        respuesta.setCodigo(codigo);
+
+        // lee respuesta (ok o error)
+        if (codigo == HttpURLConnection.HTTP_OK) {
+            respuesta.setContenido(Utilidades.streamToString(conexionHTTP.getInputStream()));
+        } else {
+            if (conexionHTTP.getErrorStream() != null) {
+                respuesta.setContenido(Utilidades.streamToString(conexionHTTP.getErrorStream()));
+            }
+        }
+
+    } catch (MalformedURLException e){
+        respuesta.setCodigo(Constantes.ERROR_MALFORMED_URL);
+        respuesta.setContenido(e.getMessage());
+    } catch (IOException e) {
+        respuesta.setCodigo(Constantes.ERROR_PETICION);
+        respuesta.setContenido(e.getMessage());
+    }
+    return respuesta;
+}
+
 }

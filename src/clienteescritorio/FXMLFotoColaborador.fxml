@@ -5,23 +5,42 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="15" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="clienteescritorio.FXMLFotoColaboradorController"
-      styleClass="card" stylesheets="@utilidad/EstiloVentanaPrincipal.css">
+<VBox prefHeight="469.0" prefWidth="399.0"
+      spacing="15"
+      styleClass="card"
+      stylesheets="@utilidad/EstiloVentanaPrincipal.css"
+      xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="clienteescritorio.FXMLFotoColaboradorController">
 
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label text="Fotografía del colaborador"
-           style="-fx-text-fill:#18529D; -fx-font-size:20; -fx-font-weight:bold;" />
+    <children>
 
-    <ImageView fx:id="ivFoto" fitWidth="220" fitHeight="220" preserveRatio="true" smooth="true"/>
+        <Label text="Fotografía del colaborador"
+               style="-fx-text-fill:#18529D; -fx-font-size:20; -fx-font-weight:bold;" />
 
-    <HBox spacing="10" alignment="CENTER">
-        <Button text="Seleccionar..." onAction="#clickSeleccionar" styleClass="button-secondary"/>
-        <Button fx:id="btnGuardar" text="Guardar" onAction="#clickGuardar" styleClass="button-success"/>
-        <Button text="Cancelar" onAction="#clickCancelar" styleClass="button"/>
-    </HBox>
+        <!-- CONTENEDOR FIJO: evita que la imagen empuje los botones -->
+        <StackPane prefHeight="240.0" maxHeight="240.0" VBox.vgrow="NEVER">
+            <ImageView fx:id="ivFoto"
+                       fitWidth="340.0"
+                       fitHeight="240.0"
+                       preserveRatio="true"
+                       smooth="true"
+                       pickOnBounds="true"/>
+        </StackPane>
+
+        <HBox alignment="CENTER" prefHeight="48.0" prefWidth="356.0" spacing="10" VBox.vgrow="NEVER">
+            <children>
+                <Button text="Seleccionar..." onAction="#clickSeleccionar" styleClass="button-secondary"/>
+                <Button fx:id="btnGuardar" text="Guardar" onAction="#clickGuardar"
+                        prefHeight="32.0" prefWidth="102.0" styleClass="button-success"/>
+                <Button text="Cancelar" onAction="#clickCancelar" styleClass="button"/>
+            </children>
+        </HBox>
+
+    </children>
 
 </VBox>

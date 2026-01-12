@@ -34,7 +34,7 @@ public class FXMLFotoColaboradorController {
         this.idColaborador = idColaborador;
         this.observador = observador;
 
-        // Cargar foto actual si existe
+        
         cargarFotoActual();
         btnGuardar.setDisable(true);
     }
@@ -46,7 +46,7 @@ public class FXMLFotoColaboradorController {
         try {
             String base64 = col.getFotoBase64().trim();
 
-            if (base64.contains(",")) { // por si viene data:image/...;base64,
+            if (base64.contains(",")) { 
                 base64 = base64.split(",")[1];
             }
 
@@ -90,7 +90,7 @@ public class FXMLFotoColaboradorController {
         if (!r.isError()) {
             Utilidades.mostrarAlertaSimple("Foto subida", r.getMensaje(), Alert.AlertType.INFORMATION);
 
-            // Notificar a la pantalla padre (estilo Ramón)
+           
             if (observador != null) {
                 observador.notificarFotoActualizada(idColaborador);
             }
