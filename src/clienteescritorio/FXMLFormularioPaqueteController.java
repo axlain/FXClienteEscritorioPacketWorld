@@ -196,25 +196,55 @@ public class FXMLFormularioPaqueteController implements Initializable {
         });
     }
 
-   private void cargarEnvios() {
-        HashMap<String, Object> respuesta =
-                EnvioImp.obtenerRecibidosSucursal();
+    private void cargarEnvios() {
+        HashMap<String, Object> respuesta = EnvioImp.obtenerRecibidosSucursal();
 
-        boolean esError = (boolean) respuesta.get(Constantes.KEY_ERROR);
+        if (!(boolean) respuesta.get(Constantes.KEY_ERROR)) {
+            List<Envio> lista = (List<Envio>) respuesta.get(Constantes.KEY_LISTA);
 
-        if (!esError) {
-            List<Envio> lista =
-                    (List<Envio>) respuesta.get(Constantes.KEY_LISTA);
+            // ✅ caso lista vacía
+            if (lista == null || lista.isEmpty()) {
+                mostrarAvisoSinEnvios();
+
+                cbEnvio.setItems(FXCollections.observableArrayList());
+                cbEnvio.setDisable(true);
+
+                // opcional recomendado: bloquear guardado
+                btnGuardar.setDisable(true);
+                return;
+            }
 
             envios = FXCollections.observableArrayList(lista);
             cbEnvio.setItems(envios);
+
+            cbEnvio.setDisable(false);
+            btnGuardar.setDisable(false);
+
+            // opcional: seleccionar el primero automáticamente
+            cbEnvio.getSelectionModel().selectFirst();
+
         } else {
             Utilidades.mostrarAlertaSimple(
                     "Error",
                     respuesta.get(Constantes.KEY_MENSAJE).toString(),
                     Alert.AlertType.ERROR
             );
+
+            // por seguridad también bloquea
+            cbEnvio.setDisable(true);
+            btnGuardar.setDisable(true);
         }
+    }
+
+   
+   private void mostrarAvisoSinEnvios() {
+        Utilidades.mostrarAlertaSimple(
+            "Sin envíos disponibles",
+            "No hay envíos disponibles a los que se les pueda añadir un paquete.\n\n"
+          + "Esto puede deberse a que:\n"
+          + "• Todos los envíos se encuentran en un estado al que no se le puede añadir un paquete\n",
+            Alert.AlertType.INFORMATION
+        );
     }
 
 
