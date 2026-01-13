@@ -163,18 +163,39 @@ private void configurarTabla(){
 
     @FXML
     private void clickEliminar(ActionEvent event) {
-        Colaborador colaborador = tvColaboradores.getSelectionModel().getSelectedItem();
-        if(colaborador != null){
-            boolean confirmarOperacion = Utilidades.mostrarAlertaConfirmacion("Eliminar colaborador", "¿Estás seguro de eliminar el registro del colaborador " + colaborador.getNombre() + "?\nAl eliminar un registro no podrás recuperar la información del colaborador");
-            if(confirmarOperacion){
-               eliminarColaborador(colaborador.getIdColaborador());
-            } 
-        } else {
-            Utilidades.mostrarAlertaSimple("Selecciona un colaborador", "Para eliminar la información del colaborador, primero debes seleccionarlo de la tabla", Alert.AlertType.WARNING);
+        Colaborador seleccionado = tvColaboradores.getSelectionModel().getSelectedItem();
+
+        if (seleccionado == null) {
+            Utilidades.mostrarAlertaSimple(
+                    "Selecciona un colaborador",
+                    "Para eliminar la información del colaborador, primero debes seleccionarlo de la tabla",
+                    Alert.AlertType.WARNING
+            );
+            return;
+        }
+
+        // Bloquear eliminarse a sí mismo
+        if (colaboradorSesion != null
+                && seleccionado.getIdColaborador() == colaboradorSesion.getIdColaborador()) {
+            Utilidades.mostrarAlertaSimple(
+                    "Acción no permitida",
+                    "No puedes eliminar tu propio usuario mientras tienes la sesión iniciada.",
+                    Alert.AlertType.WARNING
+            );
+            return;
+        }
+
+        boolean confirmarOperacion = Utilidades.mostrarAlertaConfirmacion(
+                "Eliminar colaborador",
+                "¿Estás seguro de eliminar el registro del colaborador " + seleccionado.getNombre() + "?\n"
+                + "Al eliminar un registro no podrás recuperar la información del colaborador."
+        );
+
+        if (confirmarOperacion) {
+            eliminarColaborador(seleccionado.getIdColaborador());
         }
     }
-
-    
+ 
     private void irFormulario(Colaborador colaborador){
         try{
             FXMLLoader cargador = new FXMLLoader(getClass().getResource("FXMLFormularioColaborador.fxml"));

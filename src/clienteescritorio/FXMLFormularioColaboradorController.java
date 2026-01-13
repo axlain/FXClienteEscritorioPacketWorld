@@ -69,6 +69,8 @@ public class FXMLFormularioColaboradorController implements Initializable {
     
     private Colaborador colaboradorEdicion;
     private INotificador observador;
+    private static final int MAX_LICENCIA = 15; // AJUSTA al tamaño real en MySQL (ej. VARCHAR(15))
+    private static final String REGEX_LICENCIA_FINAL = "^[A-Z0-9-]+$"; // formato final permitido
 
 
     @Override
@@ -180,22 +182,40 @@ public class FXMLFormularioColaboradorController implements Initializable {
     }
     
    private void configurarListenerRol(){
-    cbRol.getSelectionModel().selectedItemProperty().addListener(
-        new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if ("Conductor".equals(newValue)) {
-                    vboxLicencia.setVisible(true);
-                    vboxLicencia.setManaged(true);
-                } else {
-                    vboxLicencia.setVisible(false);
-                    vboxLicencia.setManaged(false);
-                    tfLicencia.clear();
+        cbRol.getSelectionModel().selectedItemProperty().addListener(
+            new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    if ("Conductor".equals(newValue)) {
+                        vboxLicencia.setVisible(true);
+                        vboxLicencia.setManaged(true);
+                    } else {
+                        vboxLicencia.setVisible(false);
+                        vboxLicencia.setManaged(false);
+                        tfLicencia.clear();
+                    }
                 }
             }
+        );
+    }
+    private String validarLicenciaFinal(String licenciaCruda) {
+        String lic = (licenciaCruda == null) ? "" : licenciaCruda.trim().toUpperCase();
+
+        if (lic.isEmpty()) {
+            return "El número de licencia es obligatorio para conductores.";
         }
-    );
-}
+
+        if (lic.length() > MAX_LICENCIA) {
+            return "El número de licencia no puede exceder " + MAX_LICENCIA + " caracteres.";
+        }
+
+        // Validación de formato final (no vacío y cumpliendo patrón)
+        if (!lic.matches(REGEX_LICENCIA_FINAL)) {
+            return "La licencia solo puede contener letras, números y guiones.";
+        }
+
+        return null; // OK
+    }
     
     private boolean sonCamposValidos() {
         String mensaje = "";
@@ -220,19 +240,20 @@ public class FXMLFormularioColaboradorController implements Initializable {
         if (cbRol.getSelectionModel().getSelectedItem() == null) {
             mensaje += "- Debes seleccionar un rol.\n";
         }
-        
+
         if (cbSucursal.getSelectionModel().getSelectedItem() == null) {
             mensaje += "- Debes seleccionar una sucursal.\n";
         }
-        
+
         String rolSeleccionado = cbRol.getSelectionModel().getSelectedItem();
         if ("Conductor".equals(rolSeleccionado)) {
-            if (tfLicencia.getText() == null || tfLicencia.getText().trim().isEmpty()) {
-                mensaje += "- El número de licencia es obligatorio para conductores.\n";
+            String errorLic = validarLicenciaFinal(tfLicencia.getText());
+            if (errorLic != null) {
+                mensaje += "- " + errorLic + "\n";
             }
         }
 
-        if (!mensaje.equals("")) {
+        if (!mensaje.isEmpty()) {
             Utilidades.mostrarAlertaSimple("Campos requeridos", mensaje, Alert.AlertType.WARNING);
             return false;
         }
